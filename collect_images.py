@@ -2,13 +2,16 @@
 """
 Soccer Player Image Collector
 Downloads high-quality images of soccer players in their jerseys.
-Uses DuckDuckGo Image Search (no API key needed).
+Uses DuckDuckGo Image Search + Bing fallback (no API key needed).
+Self-healing: automatically works around errors, rotates strategies,
+and retries failed players with alternative approaches.
 """
 
 import argparse
 import csv
 import json
 import os
+import random
 import re
 import sys
 import time
@@ -30,21 +33,33 @@ except ImportError:
 
 # ── Constants ──────────────────────────────────────────────────────────────────
 
+USER_AGENTS = [
+    'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+    'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/121.0.0.0 Safari/537.36',
+    'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+    'Mozilla/5.0 (X11; Linux x86_64; rv:109.0) Gecko/20100101 Firefox/121.0',
+    'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:121.0) Gecko/20100101 Firefox/121.0',
+]
+
 HEADERS = {
-    'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+    'User-Agent': USER_AGENTS[0],
     'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
     'Accept-Language': 'en-US,en;q=0.5',
 }
 
-MAX_RETRIES = 3
+MAX_RETRIES = 4
 RETRY_DELAY = 2.0
 MIN_IMAGE_SIZE = 5000  # bytes - skip tiny images
-MAX_RESULTS_TO_TRY = 8  # try up to 8 image results before giving up
+MAX_RESULTS_TO_TRY = 10  # try up to 10 image results before giving up
 
 COUNTRY_SEARCH_NAMES = {
     'Ivory Coast': "Côte d'Ivoire",
     'Cape Verde': 'Cape Verde Cabo Verde',
 }
+
+# Track which sources are having issues so we can adapt
+_source_health = {'ddg': 0, 'bing': 0, 'sofascore': 0}  # 0 = healthy, >3 = skip temporarily
+_consecutive_failures = 0
 
 
 # ── Helpers ────────────────────────────────────────────────────────────────────
@@ -62,17 +77,30 @@ def sanitize_filename(name):
 
 
 def fetch_with_retry(url, headers=None, timeout=20, stream=False):
-    """Fetch a URL with retry logic and exponential backoff."""
+    """Fetch a URL with retry logic, rotating user agents and exponential backoff."""
     hdrs = {**HEADERS, **(headers or {})}
     for attempt in range(MAX_RETRIES):
+        # Rotate user agent on retries to avoid blocks
+        hdrs['User-Agent'] = random.choice(USER_AGENTS)
         try:
-            r = requests.get(url, headers=hdrs, timeout=timeout, stream=stream)
+            r = requests.get(url, headers=hdrs, timeout=timeout, stream=stream,
+                             allow_redirects=True)
             if r.status_code == 429:
                 wait = RETRY_DELAY * (2 ** attempt)
+                print(f"      Rate limited, waiting {wait:.0f}s...")
                 time.sleep(wait)
                 continue
+            if r.status_code == 403:
+                # Try different user agent
+                time.sleep(1)
+                continue
             return r
-        except (requests.ConnectionError, requests.Timeout):
+        except (requests.ConnectionError, requests.Timeout, requests.exceptions.ChunkedEncodingError):
+            if attempt == MAX_RETRIES - 1:
+                return None
+            time.sleep(RETRY_DELAY * (2 ** attempt))
+        except Exception:
+            # Catch any unexpected error and retry
             if attempt == MAX_RETRIES - 1:
                 return None
             time.sleep(RETRY_DELAY * (2 ** attempt))
@@ -161,20 +189,87 @@ def search_bing_images(query, max_results=8):
     return results
 
 
+# ── SofaScore API (additional source) ─────────────────────────────────────────
+
+def search_sofascore_player(name, country):
+    """Search SofaScore for a player and return their image URL if found."""
+    if _source_health.get('sofascore', 0) > 3:
+        return None  # Source is unhealthy, skip
+
+    clean = strip_diacritics(re.sub(r"'[^']*'", '', name).strip())
+    url = f"https://api.sofascore.com/api/v1/search/players?q={quote_plus(clean)}"
+    r = fetch_with_retry(url, timeout=10)
+    if r is None or r.status_code != 200:
+        _source_health['sofascore'] = _source_health.get('sofascore', 0) + 1
+        return None
+
+    try:
+        data = r.json()
+    except (json.JSONDecodeError, ValueError):
+        return None
+
+    results = data.get('results', [])
+    if not results:
+        # Try last name only
+        parts = clean.split()
+        if len(parts) > 1:
+            url2 = f"https://api.sofascore.com/api/v1/search/players?q={quote_plus(parts[-1])}"
+            r2 = fetch_with_retry(url2, timeout=10)
+            if r2 and r2.status_code == 200:
+                try:
+                    results = r2.json().get('results', [])
+                except (json.JSONDecodeError, ValueError):
+                    pass
+        if not results:
+            return None
+
+    # Try to match by country
+    country_alias = COUNTRY_SEARCH_NAMES.get(country, country)
+    for item in results[:5]:
+        entity = item.get('entity', {})
+        player_id = entity.get('id')
+        if not player_id:
+            continue
+
+        # Check country via detail endpoint
+        detail_url = f"https://api.sofascore.com/api/v1/player/{player_id}"
+        dr = fetch_with_retry(detail_url, timeout=10)
+        if dr and dr.status_code == 200:
+            try:
+                pdata = dr.json().get('player', {})
+                pcountry = pdata.get('country', {}).get('name', '')
+                if pcountry.lower() in [country.lower(), country_alias.lower()]:
+                    return f"https://api.sofascore.com/api/v1/player/{player_id}/image"
+            except (json.JSONDecodeError, ValueError):
+                pass
+
+    # If only one result and name is close, use it anyway
+    if len(results) == 1:
+        entity = results[0].get('entity', {})
+        player_id = entity.get('id')
+        if player_id:
+            return f"https://api.sofascore.com/api/v1/player/{player_id}/image"
+
+    return None
+
+
 # ── Image Download & Validation ───────────────────────────────────────────────
 
-def download_and_save_image(url, save_path):
+def download_and_save_image(url, save_path, min_size=None):
     """Download an image, validate it, convert to JPEG, and save."""
+    if min_size is None:
+        min_size = MIN_IMAGE_SIZE
+
     r = fetch_with_retry(url, timeout=15, stream=True)
     if r is None or r.status_code != 200:
-        return False, "download failed"
+        return False, f"download failed (status={r.status_code if r else 'None'})"
 
     content_type = r.headers.get('Content-Type', '')
     if not content_type.startswith('image/'):
         return False, f"not an image ({content_type})"
 
     image_data = r.content
-    if len(image_data) < MIN_IMAGE_SIZE:
+    if len(image_data) < min_size:
         return False, f"too small ({len(image_data)} bytes)"
 
     try:
@@ -182,7 +277,7 @@ def download_and_save_image(url, save_path):
 
         # Check dimensions - we want decent sized images
         w, h = img.size
-        if w < 150 or h < 150:
+        if w < 100 or h < 100:
             return False, f"dimensions too small ({w}x{h})"
 
         # Convert to RGB JPEG
@@ -202,8 +297,9 @@ def download_and_save_image(url, save_path):
 
 # ── Main Collection Logic ─────────────────────────────────────────────────────
 
-def build_search_queries(name, country):
-    """Build a list of search queries to try, from most specific to least."""
+def build_search_queries(name, country, attempt=0):
+    """Build a list of search queries to try, from most specific to least.
+    On retry attempts, generates different query variations."""
     country_search = COUNTRY_SEARCH_NAMES.get(country, country)
     clean_name = strip_diacritics(name)
 
@@ -212,100 +308,182 @@ def build_search_queries(name, country):
     base_name = re.sub(r'\s+', ' ', base_name)
     clean_base = strip_diacritics(base_name)
 
-    queries = [
-        f"{clean_base} {country_search} national team football",
-        f"{clean_base} footballer {country_search}",
-        f"{clean_name} soccer player",
-        f"{clean_base} football player",
-    ]
+    # Extract nickname if present (e.g., 'Memo', 'Coco')
+    nickname_match = re.search(r"'([^']*)'", name)
+    nickname = nickname_match.group(1) if nickname_match else None
 
-    # For single-name players (like Neymar, Casemiro)
-    if len(base_name.split()) == 1:
+    parts = clean_base.split()
+    last_name = parts[-1] if parts else clean_base
+    first_name = parts[0] if parts else clean_base
+    first_last = f"{first_name} {last_name}" if len(parts) > 2 else clean_base
+
+    if attempt == 0:
+        queries = [
+            f"{clean_base} {country_search} national team football",
+            f"{clean_base} footballer {country_search}",
+            f"{clean_base} soccer player {country}",
+            f"{clean_base} football player",
+            f"{first_last} {country} football",
+        ]
+    else:
+        # Alternative queries for retries - try different angles
+        queries = [
+            f"{last_name} {country} national football team player",
+            f"{clean_base} {country} jersey",
+            f"{first_last} footballer",
+            f"{clean_base} player {country_search}",
+            f'"{clean_base}" football',
+        ]
+        if nickname:
+            queries.insert(0, f"{nickname} {last_name} {country} football")
+
+    # For single-name players (like Neymar, Casemiro, Bebé)
+    if len(parts) == 1:
         queries.insert(0, f"{clean_base} {country_search} football player")
-        queries.insert(1, f"{clean_base} Brazil footballer")  # many single-name players are Brazilian
+        queries.insert(1, f"{clean_base} footballer portrait")
+        if country == 'Brazil':
+            queries.insert(2, f"{clean_base} selecao brasileira")
 
     return queries
 
 
-def collect_image_for_player(name, country, output_dir, delay=0.3):
-    """Try to find and download an image for a single player."""
+def collect_image_for_player(name, country, output_dir, delay=0.3, attempt=0):
+    """Try to find and download an image for a single player.
+    Self-healing: adapts strategy based on what's working and what's not."""
+    global _consecutive_failures, _source_health
+
     safe_name = sanitize_filename(name)
     save_path = os.path.join(output_dir, country, f"{safe_name}.jpg")
     errors = []
 
-    queries = build_search_queries(name, country)
+    queries = build_search_queries(name, country, attempt=attempt)
 
-    # Source 1: DuckDuckGo Image Search
-    for qi, query in enumerate(queries[:3]):  # Try up to 3 DDG queries
-        results = search_ddg_images(query, max_results=MAX_RESULTS_TO_TRY)
-        if delay > 0:
-            time.sleep(delay)
+    # If we've had many consecutive failures, slow down (might be rate limited)
+    if _consecutive_failures >= 5:
+        print(f"      Cooling down ({_consecutive_failures} consecutive failures)...")
+        time.sleep(5)
+        _consecutive_failures = 0
+        # Reset source health to give them another chance
+        for k in _source_health:
+            _source_health[k] = max(0, _source_health[k] - 2)
 
-        for ri, result in enumerate(results):
-            url = result.get('url', '')
-            if not url:
+    # Source 1: DuckDuckGo Image Search (skip if unhealthy)
+    if _source_health.get('ddg', 0) <= 3:
+        ddg_queries = queries[:4] if attempt > 0 else queries[:3]
+        for qi, query in enumerate(ddg_queries):
+            results = search_ddg_images(query, max_results=MAX_RESULTS_TO_TRY)
+            if delay > 0:
+                time.sleep(delay)
+
+            if not results:
+                _source_health['ddg'] = _source_health.get('ddg', 0) + 1
+                errors.append(f"ddg[q{qi}]: no results")
                 continue
 
-            # Skip obviously bad URLs
-            if any(skip in url.lower() for skip in ['logo', 'icon', 'badge', 'flag', 'banner', 'sprite']):
-                continue
+            # Reset DDG health on success
+            _source_health['ddg'] = 0
 
-            success, info = download_and_save_image(url, save_path)
-            if success:
-                return {
-                    'status': 'success',
-                    'source': 'ddg',
-                    'query': query,
-                    'url': url,
-                    'info': info,
-                    'file': save_path,
-                }
+            for ri, result in enumerate(results):
+                url = result.get('url', '')
+                if not url:
+                    continue
 
-            errors.append(f"ddg[q{qi}][r{ri}]: {info}")
+                # Skip obviously bad URLs
+                if any(skip in url.lower() for skip in [
+                    'logo', 'icon', 'badge', 'flag', 'banner', 'sprite',
+                    'favicon', 'placeholder', 'default_avatar'
+                ]):
+                    continue
+
+                success, info = download_and_save_image(url, save_path)
+                if success:
+                    _consecutive_failures = 0
+                    return {
+                        'status': 'success',
+                        'source': 'ddg',
+                        'query': query,
+                        'url': url,
+                        'info': info,
+                        'file': save_path,
+                    }
+
+                errors.append(f"ddg[q{qi}][r{ri}]: {info}")
+    else:
+        errors.append("ddg: source temporarily disabled (too many failures)")
 
     # Source 2: Bing Image Search (fallback)
-    for qi, query in enumerate(queries[:2]):  # Try up to 2 Bing queries
-        results = search_bing_images(query, max_results=MAX_RESULTS_TO_TRY)
-        if delay > 0:
-            time.sleep(delay)
+    if _source_health.get('bing', 0) <= 3:
+        bing_queries = queries[:3] if attempt > 0 else queries[:2]
+        for qi, query in enumerate(bing_queries):
+            results = search_bing_images(query, max_results=MAX_RESULTS_TO_TRY)
+            if delay > 0:
+                time.sleep(delay)
 
-        for ri, result in enumerate(results):
-            url = result.get('url', '')
-            if not url:
+            if not results:
+                _source_health['bing'] = _source_health.get('bing', 0) + 1
+                errors.append(f"bing[q{qi}]: no results")
                 continue
 
-            if any(skip in url.lower() for skip in ['logo', 'icon', 'badge', 'flag', 'banner', 'sprite']):
-                continue
+            _source_health['bing'] = 0
 
-            success, info = download_and_save_image(url, save_path)
-            if success:
-                return {
-                    'status': 'warning',
-                    'source': 'bing',
-                    'query': query,
-                    'url': url,
-                    'info': info,
-                    'file': save_path,
-                    'note': 'bing fallback - manual review recommended',
-                }
+            for ri, result in enumerate(results):
+                url = result.get('url', '')
+                if not url:
+                    continue
 
-            errors.append(f"bing[q{qi}][r{ri}]: {info}")
+                if any(skip in url.lower() for skip in [
+                    'logo', 'icon', 'badge', 'flag', 'banner', 'sprite',
+                    'favicon', 'placeholder', 'default_avatar'
+                ]):
+                    continue
 
-    # Source 3: Bing thumbnail direct (last resort)
+                success, info = download_and_save_image(url, save_path)
+                if success:
+                    _consecutive_failures = 0
+                    return {
+                        'status': 'success',
+                        'source': 'bing',
+                        'query': query,
+                        'url': url,
+                        'info': info,
+                        'file': save_path,
+                    }
+
+                errors.append(f"bing[q{qi}][r{ri}]: {info}")
+
+    # Source 3: SofaScore (smaller headshot but better than nothing)
+    sofascore_url = search_sofascore_player(name, country)
+    if sofascore_url:
+        success, info = download_and_save_image(sofascore_url, save_path, min_size=1000)
+        if success:
+            _consecutive_failures = 0
+            return {
+                'status': 'warning',
+                'source': 'sofascore',
+                'url': sofascore_url,
+                'info': info,
+                'file': save_path,
+                'note': 'sofascore headshot (smaller image)',
+            }
+        errors.append(f"sofascore: {info}")
+
+    # Source 4: Bing thumbnail direct (last resort)
     clean_name = strip_diacritics(re.sub(r"'[^']*'", '', name).strip())
-    thumb_url = f"https://tse1.mm.bing.net/th?q={quote_plus(clean_name + ' footballer')}&w=400&h=400"
-    success, info = download_and_save_image(thumb_url, save_path)
+    thumb_url = f"https://tse1.mm.bing.net/th?q={quote_plus(clean_name + ' footballer ' + country)}&w=400&h=400"
+    success, info = download_and_save_image(thumb_url, save_path, min_size=2000)
     if success:
+        _consecutive_failures = 0
         return {
             'status': 'warning',
             'source': 'bing_thumbnail',
             'url': thumb_url,
             'info': info,
             'file': save_path,
-            'note': 'bing thumbnail last resort - manual review strongly recommended',
+            'note': 'bing thumbnail - review recommended',
         }
 
     errors.append(f"bing_thumb: {info}")
+    _consecutive_failures += 1
 
     return {
         'status': 'failed',
@@ -421,6 +599,55 @@ def main():
         if num % 10 == 0:
             with open(log_path, 'w', encoding='utf-8') as f:
                 json.dump(log, f, indent=2, ensure_ascii=False)
+
+    # ── Auto-retry failed players with alternative strategies ──────────────
+    if failed_players:
+        print()
+        print(f"  Retrying {len(failed_players)} failed player(s) with alternative strategies...")
+        print()
+
+        # Reset source health for retry pass
+        for k in _source_health:
+            _source_health[k] = 0
+
+        retry_succeeded = []
+        for name, country, _ in list(failed_players):
+            safe_name = sanitize_filename(name)
+            save_path = os.path.join(args.output, country, f"{safe_name}.jpg")
+            num_label = f"RETRY"
+
+            result = collect_image_for_player(name, country, args.output,
+                                              delay=args.delay * 2, attempt=1)
+
+            pad = '.' * max(1, 45 - len(name) - len(country))
+
+            if result['status'] in ('success', 'warning'):
+                src = result['source']
+                source_counts[src] = source_counts.get(src, 0) + 1
+                stats['failed'] -= 1
+                if result['status'] == 'success':
+                    stats['success'] += 1
+                else:
+                    stats['warning'] += 1
+                    warned_players.append((name, country, result.get('note', '')))
+                retry_succeeded.append((name, country))
+                print(f"[{num_label}] {name} ({country}){pad} RECOVERED ({src}, {result.get('info', '')})")
+
+                log[name] = {
+                    'country': country,
+                    'status': result['status'],
+                    'source': result.get('source', 'none'),
+                    'file': result.get('file', ''),
+                    'timestamp': datetime.now().isoformat(),
+                    'recovered_on_retry': True,
+                }
+            else:
+                print(f"[{num_label}] {name} ({country}){pad} STILL FAILED")
+
+        # Remove recovered players from failed list
+        for item in retry_succeeded:
+            failed_players = [(n, c, e) for n, c, e in failed_players
+                              if (n, c) != item]
 
     # Final log save
     with open(log_path, 'w', encoding='utf-8') as f:
