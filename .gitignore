@@ -1,0 +1,8 @@
+# Generated output
+outputs/
+collection_log.json
+collection_summary.txt
+
+# Python
+__pycache__/
+*.pyc
