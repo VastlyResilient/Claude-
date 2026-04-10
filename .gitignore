@@ -2,6 +2,7 @@
 outputs/
 collection_log.json
 collection_summary.txt
+watchdog.log
 
 # Python
 __pycache__/
