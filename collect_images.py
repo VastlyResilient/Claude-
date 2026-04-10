@@ -168,6 +168,42 @@ def search_ddg_images(query, max_results=10):
     return results
 
 
+# ── Brave Image Search ────────────────────────────────────────────────────────
+
+def search_brave_images(query, max_results=10):
+    """Search Brave for images by extracting URLs from the results page."""
+    url = f"https://search.brave.com/images?q={quote_plus(query)}&source=web"
+    r = fetch_with_retry(url, timeout=20)
+    if r is None or r.status_code != 200:
+        return []
+
+    # Extract all external image URLs from the page
+    all_imgs = re.findall(r'https?://[^"\s<>\']+?\.(?:jpg|jpeg|png|webp)', r.text)
+    # Filter out Brave's own assets
+    filtered = [u for u in all_imgs if 'brave.com' not in u and 'favicon' not in u
+                and 'amazon.com/images' not in u]
+    # Dedupe while preserving order
+    seen = set()
+    unique = []
+    for u in filtered:
+        if u not in seen:
+            seen.add(u)
+            unique.append(u)
+
+    results = []
+    for img_url in unique[:max_results]:
+        results.append({
+            'url': img_url,
+            'thumbnail': '',
+            'width': 0,
+            'height': 0,
+            'title': '',
+            'source': 'brave',
+        })
+
+    return results
+
+
 # ── Bing Image Search (fallback) ──────────────────────────────────────────────
 
 def search_bing_images(query, max_results=8):
@@ -371,64 +407,23 @@ def collect_image_for_player(name, country, output_dir, delay=0.3, attempt=0):
         for k in _source_health:
             _source_health[k] = max(0, _source_health[k] - 2)
 
-    # Source 1: DuckDuckGo Image Search (skip if unhealthy)
-    if _source_health.get('ddg', 0) <= 3:
-        ddg_queries = queries[:4] if attempt > 0 else queries[:3]
-        for qi, query in enumerate(ddg_queries):
-            results = search_ddg_images(query, max_results=MAX_RESULTS_TO_TRY)
+    # Helper to try a search source
+    def try_source(source_name, search_fn, query_list, source_label):
+        if _source_health.get(source_name, 0) > 3:
+            errors.append(f"{source_name}: source temporarily disabled")
+            return None
+
+        for qi, query in enumerate(query_list):
+            results = search_fn(query, max_results=MAX_RESULTS_TO_TRY)
             if delay > 0:
                 time.sleep(delay)
 
             if not results:
-                _source_health['ddg'] = _source_health.get('ddg', 0) + 1
-                errors.append(f"ddg[q{qi}]: no results")
+                _source_health[source_name] = _source_health.get(source_name, 0) + 1
+                errors.append(f"{source_name}[q{qi}]: no results")
                 continue
 
-            # Reset DDG health on success
-            _source_health['ddg'] = 0
-
-            for ri, result in enumerate(results):
-                url = result.get('url', '')
-                if not url:
-                    continue
-
-                # Skip obviously bad URLs
-                if any(skip in url.lower() for skip in [
-                    'logo', 'icon', 'badge', 'flag', 'banner', 'sprite',
-                    'favicon', 'placeholder', 'default_avatar'
-                ]):
-                    continue
-
-                success, info = download_and_save_image(url, save_path)
-                if success:
-                    _consecutive_failures = 0
-                    return {
-                        'status': 'success',
-                        'source': 'ddg',
-                        'query': query,
-                        'url': url,
-                        'info': info,
-                        'file': save_path,
-                    }
-
-                errors.append(f"ddg[q{qi}][r{ri}]: {info}")
-    else:
-        errors.append("ddg: source temporarily disabled (too many failures)")
-
-    # Source 2: Bing Image Search (fallback)
-    if _source_health.get('bing', 0) <= 3:
-        bing_queries = queries[:3] if attempt > 0 else queries[:2]
-        for qi, query in enumerate(bing_queries):
-            results = search_bing_images(query, max_results=MAX_RESULTS_TO_TRY)
-            if delay > 0:
-                time.sleep(delay)
-
-            if not results:
-                _source_health['bing'] = _source_health.get('bing', 0) + 1
-                errors.append(f"bing[q{qi}]: no results")
-                continue
-
-            _source_health['bing'] = 0
+            _source_health[source_name] = 0
 
             for ri, result in enumerate(results):
                 url = result.get('url', '')
@@ -443,19 +438,38 @@ def collect_image_for_player(name, country, output_dir, delay=0.3, attempt=0):
 
                 success, info = download_and_save_image(url, save_path)
                 if success:
-                    _consecutive_failures = 0
                     return {
                         'status': 'success',
-                        'source': 'bing',
+                        'source': source_label,
                         'query': query,
                         'url': url,
                         'info': info,
                         'file': save_path,
                     }
 
-                errors.append(f"bing[q{qi}][r{ri}]: {info}")
+                errors.append(f"{source_name}[q{qi}][r{ri}]: {info}")
+        return None
 
-    # Source 3: SofaScore (smaller headshot but better than nothing)
+    # Source 1: Brave Image Search (most reliable currently)
+    num_queries = 4 if attempt > 0 else 3
+    result = try_source('brave', search_brave_images, queries[:num_queries], 'brave')
+    if result:
+        _consecutive_failures = 0
+        return result
+
+    # Source 2: DuckDuckGo Image Search
+    result = try_source('ddg', search_ddg_images, queries[:num_queries], 'ddg')
+    if result:
+        _consecutive_failures = 0
+        return result
+
+    # Source 3: Bing Image Search
+    result = try_source('bing', search_bing_images, queries[:num_queries], 'bing')
+    if result:
+        _consecutive_failures = 0
+        return result
+
+    # Source 4: SofaScore (smaller headshot but better than nothing)
     sofascore_url = search_sofascore_player(name, country)
     if sofascore_url:
         success, info = download_and_save_image(sofascore_url, save_path, min_size=1000)
