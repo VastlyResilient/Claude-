@@ -76,7 +76,7 @@ def sanitize_filename(name):
     return re.sub(r'[<>:"/\\|?*]', '_', name).strip()
 
 
-def fetch_with_retry(url, headers=None, timeout=20, stream=False):
+def fetch_with_retry(url, headers=None, timeout=30, stream=False):
     """Fetch a URL with retry logic, rotating user agents and exponential backoff."""
     hdrs = {**HEADERS, **(headers or {})}
     for attempt in range(MAX_RETRIES):
@@ -115,13 +115,17 @@ def get_ddg_vqd(query):
     r = fetch_with_retry(url)
     if r is None:
         return None
-    # Extract vqd token from response
-    match = re.search(r'vqd=["\']([^"\']+)["\']', r.text)
-    if match:
-        return match.group(1)
-    match = re.search(r'vqd=([^&"\']+)', r.text)
-    if match:
-        return match.group(1)
+    # Try multiple patterns — DDG changes the format periodically
+    patterns = [
+        r'vqd=["\x27]([^"\x27]+)["\x27]',  # vqd="..." or vqd='...'
+        r'vqd=([0-9]+-[0-9a-f]+)',           # vqd=4-173041784389...
+        r'vqd["\x27]?\s*[:=]\s*["\x27]?([0-9]+-[0-9a-f]+)',  # vqd: "..." or vqd="..."
+        r'vqd=([^&"\x27\s]+)',               # vqd= followed by anything until delimiter
+    ]
+    for pattern in patterns:
+        match = re.search(pattern, r.text)
+        if match:
+            return match.group(1)
     return None
 
 
