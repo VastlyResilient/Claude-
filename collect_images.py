@@ -49,7 +49,7 @@ HEADERS = {
 
 MAX_RETRIES = 4
 RETRY_DELAY = 2.0
-MIN_IMAGE_SIZE = 5000  # bytes - skip tiny images
+MIN_IMAGE_SIZE = 15000  # bytes - skip tiny/blurry images
 MAX_RESULTS_TO_TRY = 10  # try up to 10 image results before giving up
 
 COUNTRY_SEARCH_NAMES = {
@@ -317,7 +317,7 @@ def download_and_save_image(url, save_path, min_size=None):
 
         # Check dimensions - we want decent sized images
         w, h = img.size
-        if w < 100 or h < 100:
+        if w < 250 or h < 250:
             return False, f"dimensions too small ({w}x{h})"
 
         # Convert to RGB JPEG
@@ -432,7 +432,11 @@ def collect_image_for_player(name, country, output_dir, delay=0.3, attempt=0):
 
                 if any(skip in url.lower() for skip in [
                     'logo', 'icon', 'badge', 'flag', 'banner', 'sprite',
-                    'favicon', 'placeholder', 'default_avatar'
+                    'favicon', 'placeholder', 'default_avatar',
+                    # Watermark sources
+                    'alamy.com', 'gettyimages.com', 'shutterstock.com',
+                    'depositphotos.com', 'dreamstime.com', 'istockphoto.com',
+                    '123rf.com', 'stock.adobe.com',
                 ]):
                     continue
 
