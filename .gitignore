@@ -7,3 +7,4 @@ watchdog.log
 # Python
 __pycache__/
 *.pyc
+*.png
