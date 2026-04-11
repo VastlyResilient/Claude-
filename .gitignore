@@ -1,5 +1,6 @@
 # Generated output
 outputs/
+*.zip
 collection_log.json
 collection_summary.txt
 watchdog.log
