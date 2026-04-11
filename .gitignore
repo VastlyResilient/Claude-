@@ -3,6 +3,7 @@ outputs/
 collection_log.json
 collection_summary.txt
 watchdog.log
+collector.pid
 
 # Python
 __pycache__/
