@@ -22,6 +22,13 @@ from urllib.parse import quote_plus
 
 import requests
 
+# Auto-install playwright if missing
+try:
+    from playwright.sync_api import sync_playwright
+    HAS_PLAYWRIGHT = True
+except ImportError:
+    HAS_PLAYWRIGHT = False
+
 # Auto-install Pillow if missing
 try:
     from PIL import Image
@@ -192,6 +199,91 @@ def search_thesportsdb(name):
             return thumb, cutout
 
     return None, None
+
+
+# ── Ecosia Image Search via Chrome (Playwright) ──────────────────────────────
+
+# Persistent browser instance (reused across players to avoid startup cost)
+_browser_instance = None
+_browser_context = None
+
+WATERMARK_DOMAINS = [
+    'alamy.com', 'alamy', 'gettyimages.com', 'getty', 'shutterstock.com',
+    'shutterstock', 'istockphoto.com', 'istock', '123rf.com', '123rf',
+    'depositphotos.com', 'dreamstime.com', 'stock.adobe.com', 'wireimage',
+    'corbis', 'agefotostock',
+]
+
+def _get_browser():
+    """Get or create a persistent Playwright browser instance."""
+    global _browser_instance, _browser_context
+    if _browser_instance and _browser_context:
+        return _browser_context
+    if not HAS_PLAYWRIGHT:
+        return None
+    try:
+        pw = sync_playwright().start()
+        proxy_url = os.environ.get('HTTPS_PROXY', '')
+        match = re.match(r'http://([^:]+):([^@]+)@([^:]+):(\d+)', proxy_url)
+        if match:
+            proxy_conf = {
+                "server": f"http://{match.group(3)}:{match.group(4)}",
+                "username": match.group(1),
+                "password": match.group(2),
+            }
+        else:
+            proxy_conf = None
+        _browser_instance = pw.chromium.launch(
+            headless=True,
+            proxy=proxy_conf,
+            args=['--ignore-certificate-errors']
+        )
+        _browser_context = _browser_instance.new_context(
+            ignore_https_errors=True,
+            user_agent=random.choice(USER_AGENTS),
+        )
+        return _browser_context
+    except Exception:
+        return None
+
+
+def search_ecosia_chrome(query, max_results=10):
+    """Search Ecosia Images using headless Chrome via Playwright."""
+    ctx = _get_browser()
+    if not ctx:
+        return []
+    try:
+        page = ctx.new_page()
+        page.goto(f"https://www.ecosia.org/images?q={quote_plus(query)}",
+                  timeout=20000, wait_until="domcontentloaded")
+        page.wait_for_timeout(2500)
+        content = page.content()
+        page.close()
+
+        all_imgs = re.findall(r'(https?://[^"\s<>\\]+\.(?:jpg|jpeg|png|webp)[^"\s<>\\]*)', content)
+        blocked = WATERMARK_DOMAINS + ['ecosia.org', 'favicon', 'logo', 'icon', 'badge']
+        filtered = [u for u in all_imgs if not any(b in u.lower() for b in blocked)]
+        # Dedupe
+        seen = set()
+        unique = []
+        for u in filtered:
+            if u not in seen:
+                seen.add(u)
+                unique.append(u)
+
+        results = []
+        for img_url in unique[:max_results]:
+            results.append({
+                'url': img_url,
+                'thumbnail': '',
+                'width': 0,
+                'height': 0,
+                'title': '',
+                'source': 'ecosia_chrome',
+            })
+        return results
+    except Exception:
+        return []
 
 
 # ── Brave Image Search ────────────────────────────────────────────────────────
@@ -511,8 +603,14 @@ def collect_image_for_player(name, country, output_dir, delay=0.3, attempt=0):
     if delay > 0:
         time.sleep(delay * 0.5)
 
-    # Source 2: Brave Image Search
+    # Source 2: Ecosia via Chrome (high-quality, no watermarks)
     num_queries = 4 if attempt > 0 else 3
+    result = try_source('ecosia_chrome', search_ecosia_chrome, queries[:num_queries], 'ecosia_chrome')
+    if result:
+        _consecutive_failures = 0
+        return result
+
+    # Source 3: Brave Image Search
     result = try_source('brave', search_brave_images, queries[:num_queries], 'brave')
     if result:
         _consecutive_failures = 0
