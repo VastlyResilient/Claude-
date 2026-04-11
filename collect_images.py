@@ -168,6 +168,32 @@ def search_ddg_images(query, max_results=10):
     return results
 
 
+# ── TheSportsDB API (clean images, no watermarks) ─────────────────────────────
+
+def search_thesportsdb(name):
+    """Search TheSportsDB for a player and return image URLs."""
+    clean = strip_diacritics(re.sub(r"'[^']*'", '', name).strip())
+    url = f"https://www.thesportsdb.com/api/v1/json/3/searchplayers.php?p={quote_plus(clean)}"
+    r = fetch_with_retry(url, timeout=10)
+    if r is None or r.status_code != 200:
+        return None, None
+
+    try:
+        data = r.json()
+    except (json.JSONDecodeError, ValueError):
+        return None, None
+
+    players = data.get('player') or []
+    # Find soccer players
+    for p in players:
+        if p.get('strSport', '').lower() == 'soccer':
+            thumb = p.get('strThumb')
+            cutout = p.get('strCutout')
+            return thumb, cutout
+
+    return None, None
+
+
 # ── Brave Image Search ────────────────────────────────────────────────────────
 
 def search_brave_images(query, max_results=10):
@@ -454,26 +480,57 @@ def collect_image_for_player(name, country, output_dir, delay=0.3, attempt=0):
                 errors.append(f"{source_name}[q{qi}][r{ri}]: {info}")
         return None
 
-    # Source 1: Brave Image Search (most reliable currently)
+    # Source 1: TheSportsDB (clean images, no watermarks, free API)
+    thumb_url, cutout_url = search_thesportsdb(name)
+    if thumb_url:
+        success, info = download_and_save_image(thumb_url, save_path)
+        if success:
+            _consecutive_failures = 0
+            return {
+                'status': 'success',
+                'source': 'thesportsdb',
+                'url': thumb_url,
+                'info': info,
+                'file': save_path,
+            }
+        errors.append(f"thesportsdb_thumb: {info}")
+    if cutout_url:
+        success, info = download_and_save_image(cutout_url, save_path)
+        if success:
+            _consecutive_failures = 0
+            return {
+                'status': 'success',
+                'source': 'thesportsdb',
+                'url': cutout_url,
+                'info': info,
+                'file': save_path,
+            }
+        errors.append(f"thesportsdb_cutout: {info}")
+    if not thumb_url and not cutout_url:
+        errors.append("thesportsdb: player not found")
+    if delay > 0:
+        time.sleep(delay * 0.5)
+
+    # Source 2: Brave Image Search
     num_queries = 4 if attempt > 0 else 3
     result = try_source('brave', search_brave_images, queries[:num_queries], 'brave')
     if result:
         _consecutive_failures = 0
         return result
 
-    # Source 2: DuckDuckGo Image Search
+    # Source 3: DuckDuckGo Image Search
     result = try_source('ddg', search_ddg_images, queries[:num_queries], 'ddg')
     if result:
         _consecutive_failures = 0
         return result
 
-    # Source 3: Bing Image Search
+    # Source 4: Bing Image Search
     result = try_source('bing', search_bing_images, queries[:num_queries], 'bing')
     if result:
         _consecutive_failures = 0
         return result
 
-    # Source 4: SofaScore (smaller headshot but better than nothing)
+    # Source 5: SofaScore (smaller headshot but better than nothing)
     sofascore_url = search_sofascore_player(name, country)
     if sofascore_url:
         success, info = download_and_save_image(sofascore_url, save_path, min_size=1000)
