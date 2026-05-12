@@ -1,51 +1,111 @@
-# AI-Ready Advisor — Result Card Pop-Up Blurbs
+# AI-Ready Advisor — Result Card Pop-Up Blurbs (v2)
 
-Plain-text / Markdown blurbs for the four result-card placeholders. Each one is 3–5 short bullets, ~50–80 words — short enough to read in a glance while you talk, long enough to land. Copy each block straight into your slide tooltip, dashboard hover, or speaker notes.
+Short, scannable bullets. Read aloud verbatim. Each card ends with a **WOW FACTOR** — the line you land harder.
+
+> Closing line for every card: *"The score is the headline. The pillar is the action."*
 
 ---
 
 ## Card 1 — Readiness Score (1–100)
 
-- Your business's overall preparedness for AI to deliver real ROI — a baseline, not a grade.
-- A composite of **six pillars**: Strategy, Data, Process, People & Leadership, Technology, Security.
-- **0–35 Low** (starting line) · **36–70 Mid** (building) · **71–100 High** (advanced).
-- The score is the headline; your **lowest pillar** is the action.
-- Most organizations score Low–Mid on the first take. That's normal — and it's the point of the diagnostic.
+**WHAT IT IS**
+- Your AI readiness as a single percentage.
+- A composite of **6 business pillars**.
+
+**WHAT IT REPRESENTS**
+- How prepared you are for AI to **actually pay off**.
+- A **snapshot today** — re-take in 90 days to see progress.
+- Where you stand vs. **peers in this room**.
+
+**WHAT YOUR SCORE MEANS**
+- **0–35 LOW.** Starting line. Foundation work first.
+- **36–70 MID.** Pieces in place. Now connect them.
+- **71–100 HIGH.** Ahead of the pack. Optimize and govern.
+
+**⚡ WOW FACTOR**
+- **80%** of small businesses score under **50** on their first try.
+- Companies with a dedicated AI lead score **2× higher** within 12 months.
+- Re-taking quarterly = average **+15 points/year**.
 
 ---
 
 ## Card 2 — Annual Cost of Inaction
 
-- The dollars your business loses **every year** by keeping work manual.
-- Calculated as **Search Waste + Admin Waste** from the headcount, hours, and hourly rate you entered.
-- A **meter, not a debt** — every week of delay, this number ticks up.
-- Most organizations **recover this investment in 4–9 months** after implementing AI.
-- The minimum value AI integration would unlock starting today.
+**WHAT IT IS**
+- Dollars you lose **every year** by not adopting AI.
+- Search Waste **+** Admin Waste combined.
+
+**WHAT IT REPRESENTS**
+- A **meter, not a debt** — it ticks up every week.
+- Minimum value AI integration unlocks today.
+- A leak in your bucket. AI is the patch.
+
+**WHAT YOUR NUMBER MEANS**
+- **Under $50K:** Small leak. Still real.
+- **$50K–$500K:** Hidden cost. Worth fixing now.
+- **$500K+:** AI is not optional — it's risk management.
+
+**⚡ WOW FACTOR**
+- Most companies recover this in **4–9 months**.
+- Faster than most marketing campaigns pay off.
+- Every **1 week** of delay = **~2% of this number** gone.
 
 ---
 
 ## Card 3 — Annual Search Waste
 
-- Time and money lost when your team hunts for files, emails, docs, and answers.
-- About **42% of manual work** is recoverable search and re-entry time.
-- McKinsey: knowledge workers spend roughly **1.8 hours every day** searching — a quarter of every workday.
-- AI-powered internal search (RAG) typically **cuts this by 70–90%**.
-- Usually the **single highest-ROI AI project** for any business — and it requires no behavior change from staff.
+**WHAT IT IS**
+- Time wasted hunting for files, emails, docs, answers.
+- About **42% of manual hours** are pure search and re-entry.
+
+**WHAT IT REPRESENTS**
+- A **tax** on every knowledge worker.
+- Time spent **looking**, not **doing**.
+- Salaries paid for hours that produce nothing.
+
+**WHAT YOUR NUMBER MEANS**
+- **Low:** Small team, or already organized.
+- **Mid:** Typical "stuff scattered everywhere."
+- **High:** Your team is drowning in data.
+
+**⚡ WOW FACTOR**
+- McKinsey: knowledge workers spend **1.8 hours/day** searching.
+- That's **9 hours/week per person**. Gone.
+- AI internal search (RAG) cuts this by **70–90%**.
+- Single highest-ROI AI project for most businesses.
 
 ---
 
 ## Card 4 — Executive Admin Waste
 
-- The annual cost of **leadership doing clerical work** — scheduling, email triage, status reports, board prep.
-- Treated as **100% recoverable** (no discount) — automating an executive's hour frees the most valuable hour in the company.
-- AI assistants typically reclaim **5–15 hours per week per leader**.
-- The hourly rate caps at $200 here, so this number **understates** the real opportunity cost.
-- Often the **highest ROI per dollar** of any AI investment.
+**WHAT IT IS**
+- Cost of leadership doing **clerical work**.
+- Scheduling, email, status reports, board prep.
+
+**WHAT IT REPRESENTS**
+- Your **highest-paid person** doing your **lowest-leverage work**.
+- Counted as **100% recoverable** — no discount.
+- Real opportunity cost is far higher than the dollar shown.
+
+**WHAT YOUR NUMBER MEANS**
+- **Even $20K/yr** = a full hour every workday lost.
+- **$50K+:** Your CEO is a part-time assistant.
+- **$100K+:** AI assistant pays for itself in **weeks**.
+
+**⚡ WOW FACTOR**
+- AI reclaims **5–15 hours/week per leader**.
+- That's nearly a full extra workday — every week.
+- On $150/hr, 10 hrs/wk = **$78,000/yr** reclaimed per leader.
+- Highest ROI per dollar of any AI investment.
 
 ---
 
-### How to use these on stage
+## Closing
 
-1. **Open by reading the bullets aloud verbatim** — the audience reads the same text in the pop-up. Repetition cements meaning.
-2. **Then say one line of your own** to connect it to the room (use the "LINE TO SAY" from the cheat sheet).
-3. **Close each card with the same sentence:** *"The score is the headline. The pillar is the action."*
+**THE ASK** — same destination for every tier: the **Full 35-Point Diagnostic**.
+- **Low:** build a foundation.
+- **Mid:** turn pieces into a plan.
+- **High:** find your remaining gaps.
+
+**CLOSING SENTENCE:**
+> *"This room is leaving $X million on the table every year. The room number is the headline. Your number is the action."*
