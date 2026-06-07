@@ -10,3 +10,4 @@ collector.pid
 __pycache__/
 *.pyc
 *.png
+*.log
