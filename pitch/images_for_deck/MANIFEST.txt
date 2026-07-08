@@ -1,0 +1,20 @@
+ABSOLUTE TRANSPORTATION — IMAGES USED IN THE PARTNERSHIP DECK
+(High-resolution originals pulled from absolute-transportation.com)
+
+FILE                                             WHERE IT APPEARS IN THE DECK
+------------------------------------------------ --------------------------------------------
+00_brand-wordmark.jpg                            Gold "Absolute" wordmark — Cover (p1) & Close (p13)
+01_COVER_fleet-lineup-at-estate.jpg              Full-bleed cover background (p1); faint bg on Agency Line (p11)
+02_SNAPSHOT_sedan-lineup.jpg                     Left side strip on the 60-second Snapshot (p2)
+03_REFRAME_stretch-interior-starlight.jpg        Full-bleed background on "lending us your name" (p3)
+04_WHOWEARE_branded-transit-van.jpg              Photo on Family-Owned page (p4)
+05_FLEET_executive-sedan-crossover_Aviator.jpg   Fleet card — Executive Sedan & Crossover (p5)
+05_FLEET_SUV_Escalade.jpg                        Fleet card — Luxury Full-Size SUV (p5)
+05_FLEET_sprinter-transit-interior.jpg           Fleet card — Executive Sprinter & Transit (p5)
+05_FLEET_stretch-limo-interior.jpg               Fleet card — Super-Stretch Limousine (p5)
+05_FLEET_all-electric_Mustang-MachE.jpg          Fleet card — All-Electric Option (p5)
+06_INTERIORS_wetbar-champagne.jpg                Top full-width image on Interiors (p6); faint bg on Close (p13)
+06_INTERIORS_SUV-cabin.jpg                       Lower-left image on Interiors (p6)
+
+NOTE: These are your REAL vehicles. AI-generated atmospheric images (once produced)
+will be delivered in a separate folder so you can compare before anything is swapped in.
