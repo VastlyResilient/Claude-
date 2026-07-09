@@ -19,7 +19,7 @@ designed to attach to outreach emails to travel agencies, cruise planners, hotel
 
 ## Facts used (all sourced from the live website)
 
-Family-owned since 2019 by Komal & Jais Lunn · 341 Washington Avenue, North Haven, CT 06473 ·
+Family-owned since 2019 by Komal Manmohan · 341 Washington Avenue, North Haven, CT 06473 ·
 24/7/365 · CT livery-licensed · serves CT + NY, NJ, MA, RI, PA, VT, NH, DE, DC ·
 9 airports (JFK, LGA, EWR, BOS, BDL, HPN, HVN, SWF, BDR) · cruise ports (Cape Liberty, Manhattan, Brooklyn) ·
 fleet: Lincoln Aviator/MKT sedans, Cadillac Escalade/Suburban/Expedition SUVs, Mercedes Sprinter / Ford Transit vans,
