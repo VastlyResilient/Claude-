@@ -88,7 +88,10 @@ p{margin:0;line-height:1.72}
 .fcard .ph .cap-seats{position:absolute;top:8px;right:8px;background:rgba(12,12,13,.82);color:var(--gold2);font-size:8px;letter-spacing:.16em;text-transform:uppercase;padding:4px 8px}
 .fcard .body{padding:12px 14px 14px}
 .fcard h3{font-size:15px;line-height:1.12}
-.fcard .models{font-size:8.5px;letter-spacing:.13em;text-transform:uppercase;color:var(--gold);margin:5px 0 7px}
+.fcard .models{font-size:8.5px;letter-spacing:.13em;text-transform:uppercase;color:var(--gold);margin:5px 0 7px;display:flex;align-items:center;gap:8px}
+.fcard .bemblems{display:flex;align-items:center;gap:6px;flex:0 0 auto;padding-right:8px;border-right:1px solid var(--line)}
+.fcard .bemb{height:15px;width:auto;max-width:26px;object-fit:contain;display:block}
+.fcard .bemb.tall{height:17px}
 .fcard .desc{font-size:9.7px;color:var(--muted);line-height:1.55;font-weight:300}
 
 /* ---- list rows ---- */
@@ -257,7 +260,7 @@ p{margin:0;line-height:1.72}
 
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:34px;margin-top:26px;align-items:start">
       <div>
-        <p class="lead">Absolute Transportation was founded in 2019 by <b style="font-weight:500;color:var(--ink)">Komal</b> and <b style="font-weight:500;color:var(--ink)">Jais Lunn</b> — and it is still run by the same family today. That matters more than it sounds.</p>
+        <p class="lead">Absolute Transportation was founded in 2019 by <b style="font-weight:500;color:var(--ink)">Komal Manmohan</b> — and it is still run by the same family today. That matters more than it sounds.</p>
         <p class="lead" style="margin-top:14px">When you call, you reach people whose name is on the door, not a call center reading from a script. We have skin in the game on every single trip, because every guest we carry is a direct reflection of the family that built this.</p>
         <p class="lead" style="margin-top:14px">From our home in North Haven, we serve clients locally, regionally, and nationally — private chauffeured travel, ground and air transfers, and special-needs transportation — each arranged with precision and genuine care.</p>
       </div>
@@ -304,26 +307,26 @@ p{margin:0;line-height:1.72}
     <div class="fleet-grid" style="margin-top:24px">
       <div class="fcard">
         <div class="ph"><img src="assets/veh_aviator.jpg" alt=""><span class="cap-seats">Up to 4 Guests</span></div>
-        <div class="body"><h3>Executive Sedan &amp; Crossover</h3><div class="models">Lincoln Aviator · Lincoln MKT</div><div class="desc">The quiet standard for airport runs, executive travel, and the client who values arriving composed.</div></div>
+        <div class="body"><h3>Executive Sedan &amp; Crossover</h3><div class="models"><span class="bemblems"><img class="bemb tall" src="assets/brands/emblem_lincoln.png" alt="Lincoln"></span>Lincoln Aviator · Lincoln MKT</div><div class="desc">The quiet standard for airport runs, executive travel, and the client who values arriving composed.</div></div>
       </div>
       <div class="fcard">
         <div class="ph"><img src="assets/veh_escalade.jpg" alt=""><span class="cap-seats">Up to 6 Guests</span></div>
-        <div class="body"><h3>Luxury Full-Size SUV</h3><div class="models">Cadillac Escalade · Suburban · Expedition</div><div class="desc">Presence and space for clients and their luggage — the workhorse of a flawless airport or cruise transfer.</div></div>
+        <div class="body"><h3>Luxury Full-Size SUV</h3><div class="models"><span class="bemblems"><img class="bemb" src="assets/brands/emblem_cadillac.png" alt="Cadillac"><img class="bemb" src="assets/brands/emblem_chevrolet.png" alt="Chevrolet"><img class="bemb" src="assets/brands/emblem_ford.png" alt="Ford"></span>Cadillac Escalade · Suburban · Expedition</div><div class="desc">Presence and space for clients and their luggage — the workhorse of a flawless airport or cruise transfer.</div></div>
       </div>
       <div class="fcard">
         <div class="ph"><img src="assets/veh_sprinter.jpg" alt=""><span class="cap-seats">Up to 13 Guests</span></div>
-        <div class="body"><h3>Executive Sprinter &amp; Transit</h3><div class="models">Mercedes-Benz Sprinter · Ford Transit</div><div class="desc">Move a wedding party, a cruise group, or a corporate team together — in diamond-stitched comfort, never a cramped shuttle.</div></div>
+        <div class="body"><h3>Executive Sprinter &amp; Transit</h3><div class="models"><span class="bemblems"><img class="bemb" src="assets/brands/emblem_mercedes-benz.png" alt="Mercedes-Benz"><img class="bemb" src="assets/brands/emblem_ford.png" alt="Ford"></span>Mercedes-Benz Sprinter · Ford Transit</div><div class="desc">Move a wedding party, a cruise group, or a corporate team together — in diamond-stitched comfort, never a cramped shuttle.</div></div>
       </div>
       <div class="fcard">
         <div class="ph"><img src="assets/veh_stretch.jpg" alt=""><span class="cap-seats">Up to 8 Guests</span></div>
-        <div class="body"><h3>Super-Stretch Limousine</h3><div class="models">Lincoln Super-Stretch</div><div class="desc">Fiber-optic lighting, surround sound, and a chilled wet bar. For your clients, the celebration begins at the curb.</div></div>
+        <div class="body"><h3>Super-Stretch Limousine</h3><div class="models"><span class="bemblems"><img class="bemb tall" src="assets/brands/emblem_lincoln.png" alt="Lincoln"></span>Lincoln Super-Stretch</div><div class="desc">Fiber-optic lighting, surround sound, and a chilled wet bar. For your clients, the celebration begins at the curb.</div></div>
       </div>
     </div>
 
     <div style="display:flex;gap:16px;margin-top:16px">
       <div class="fcard" style="flex:1;flex-direction:row">
         <div class="ph" style="width:1.7in;height:auto"><img src="assets/veh_mache.jpg" alt=""><span class="cap-seats">Up to 3 Guests</span></div>
-        <div class="body" style="display:flex;flex-direction:column;justify-content:center"><h3>All-Electric Option</h3><div class="models">Ford Mustang Mach-E</div><div class="desc">A sustainable choice for the client who asks — the same standard of care, a lighter footprint.</div></div>
+        <div class="body" style="display:flex;flex-direction:column;justify-content:center"><h3>All-Electric Option</h3><div class="models"><span class="bemblems"><img class="bemb" src="assets/brands/emblem_ford.png" alt="Ford"></span>Ford Mustang Mach-E</div><div class="desc">A sustainable choice for the client who asks — the same standard of care, a lighter footprint.</div></div>
       </div>
       <div style="flex:0 0 2.4in;border:1px solid var(--ink);background:var(--ink);color:var(--ivory);padding:16px 18px;display:flex;flex-direction:column;justify-content:center">
         <div class="kick plain" style="color:var(--gold2);font-size:8.5px">One Fleet, One Standard</div>
