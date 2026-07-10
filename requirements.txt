@@ -1,0 +1,7 @@
+# Runtime dependencies for twitter-transcribe.
+#
+# System requirement (not pip-installable): ffmpeg + ffprobe must be on PATH.
+#   Debian/Ubuntu:  sudo apt-get install ffmpeg
+#   macOS (brew):   brew install ffmpeg
+yt-dlp>=2024.1.0
+faster-whisper>=1.0.0

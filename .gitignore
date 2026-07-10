@@ -11,3 +11,11 @@ __pycache__/
 *.pyc
 *.png
 *.log
+*.egg-info/
+build/
+dist/
+.pytest_cache/
+
+# twitter-transcribe output
+transcripts/
+*.wav
