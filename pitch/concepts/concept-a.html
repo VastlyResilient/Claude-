@@ -1,0 +1,135 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<title>Concept A — The Partner Edition</title>
+<style>
+@font-face{font-family:'Inter';src:url('fonts/inter-latin-300-normal.woff2') format('woff2');font-weight:300;font-display:block}
+@font-face{font-family:'Inter';src:url('fonts/inter-latin-400-normal.woff2') format('woff2');font-weight:400;font-display:block}
+@font-face{font-family:'Inter';src:url('fonts/inter-latin-500-normal.woff2') format('woff2');font-weight:500;font-display:block}
+@font-face{font-family:'Cormorant';src:url('fonts/cormorant-garamond-latin-300-normal.woff2') format('woff2');font-weight:300;font-display:block}
+@font-face{font-family:'Cormorant';src:url('fonts/cormorant-garamond-latin-500-normal.woff2') format('woff2');font-weight:500;font-display:block}
+@font-face{font-family:'Cormorant';src:url('fonts/cormorant-garamond-latin-400-italic.woff2') format('woff2');font-weight:400;font-style:italic;font-display:block}
+
+:root{--paper:#F7F5F1;--ink:#111111;--mute:#6E6B66;--hair:rgba(17,17,17,.16)}
+@page{size:8.5in 11in;margin:0}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:#d9d6d0;font-family:'Inter',sans-serif;color:var(--ink);-webkit-font-smoothing:antialiased}
+.page{position:relative;width:8.5in;height:11in;overflow:hidden;background:var(--paper);break-after:page;
+  -webkit-print-color-adjust:exact;print-color-adjust:exact}
+.page:last-child{break-after:auto}
+@media screen{.page{margin:22px auto;box-shadow:0 20px 60px rgba(0,0,0,.25)}}
+
+.m{position:absolute;left:.75in;right:.75in}
+.label{font-size:7.5px;letter-spacing:.32em;text-transform:uppercase;font-weight:500}
+.mute{color:var(--mute)}
+.hair{height:1px;background:var(--hair)}
+.serif{font-family:'Cormorant',serif;font-weight:300;letter-spacing:-.01em}
+.serif i{font-style:italic;font-weight:400}
+.body{font-size:9.6px;line-height:1.75;font-weight:300;color:#2a2a2a}
+.cap{font-size:7.5px;letter-spacing:.06em;color:var(--mute);margin-top:8px;font-weight:300}
+.cap b{font-weight:500;color:var(--ink);letter-spacing:.24em;text-transform:uppercase;font-size:7px;margin-right:8px}
+.folio{position:absolute;left:.75in;right:.75in;bottom:.45in;display:flex;justify-content:space-between;align-items:center;font-size:7px;letter-spacing:.3em;text-transform:uppercase;color:var(--mute)}
+.folio img{height:10px;opacity:.75}
+img.ph{display:block;width:100%;object-fit:cover}
+.drop::first-letter{font-family:'Cormorant';font-weight:300;float:left;font-size:54px;line-height:.82;padding:4px 8px 0 0;color:var(--ink)}
+</style></head><body>
+
+<!-- ================= A1 · COVER ================= -->
+<section class="page">
+  <div class="m" style="top:.55in;display:flex;justify-content:space-between;align-items:center">
+    <img src="../assets/absolute_logo.png" style="height:17px" alt="Absolute Transportation">
+    <div class="label">The Partner Edition</div>
+    <div class="label mute">Vol. 01 — 2026</div>
+  </div>
+  <div class="m hair" style="top:.86in"></div>
+
+  <div class="m" style="top:1.25in">
+    <div class="label mute">For travel advisors, hotels &amp; planners</div>
+    <h1 class="serif" style="font-size:84px;line-height:.92;margin-top:20px">The art of<br><i>arriving</i> well.</h1>
+    <p class="body" style="font-size:11px;max-width:3.6in;margin-top:22px">A private briefing on the chauffeured partner you recommend when your name is on the line — and the standards we keep so it always comes back to you polished.</p>
+  </div>
+
+  <div class="m" style="top:4.7in">
+    <img class="ph" src="../assets/veh_escalade.jpg" style="height:4.75in;object-position:center 62%" alt="">
+    <div class="cap"><b>Cover</b>Cadillac Escalade — the Executive SUV class.</div>
+  </div>
+
+  <div class="m" style="bottom:.45in;display:flex;justify-content:space-between;font-size:7px;letter-spacing:.3em;text-transform:uppercase">
+    <span><span class="mute">01</span>&nbsp; The Reframe</span>
+    <span><span class="mute">02</span>&nbsp; The House</span>
+    <span><span class="mute">03</span>&nbsp; The Fleet</span>
+    <span><span class="mute">04</span>&nbsp; The Chauffeurs</span>
+    <span><span class="mute">05</span>&nbsp; The Partnership</span>
+  </div>
+</section>
+
+<!-- ================= A2 · THE HOUSE (editorial feature) ================= -->
+<section class="page">
+  <div class="m" style="top:.55in;display:flex;justify-content:space-between">
+    <div class="label">02 — The House</div>
+    <div class="label mute">Absolute Transportation · Since 2007</div>
+  </div>
+  <div class="m hair" style="top:.8in"></div>
+
+  <div class="m" style="top:1.1in">
+    <img class="ph" src="../assets/limos_in_line.jpg" style="height:3.55in;object-position:center 55%" alt="">
+    <div class="cap"><b>Plate I</b>The fleet, uniform and always in black.</div>
+  </div>
+
+  <div class="m" style="top:5.1in;display:grid;grid-template-columns:1fr 2.3in;gap:.45in">
+    <div>
+      <h2 class="serif" style="font-size:46px;line-height:.98">Family-owned.<br><i>Personally</i> accountable.</h2>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:.28in;margin-top:22px">
+        <p class="body drop">Absolute Transportation was transformed by Komal Manmohan — and it is still run by the same family today. That matters more than it sounds. When you call, you reach people whose name is on the door, not a call center reading from a script.</p>
+        <p class="body">A national chain measures a bad trip as a statistic. We measure it as a guest we let down and a partner we may have embarrassed — so the same people who own the company answer the phone, dispatch the cars, and follow up after the ride.</p>
+      </div>
+    </div>
+    <div style="border-left:1px solid var(--hair);padding-left:.3in;display:flex;flex-direction:column;justify-content:space-between">
+      <p class="serif" style="font-size:24px;line-height:1.18"><i>“We build lasting relationships — with the guests we drive, and with the partners who trust us to represent them.”</i></p>
+      <div>
+        <div class="hair" style="margin-bottom:12px"></div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;row-gap:14px">
+          <div><div class="serif" style="font-size:26px">2007</div><div class="label mute" style="font-size:6.5px">Established</div></div>
+          <div><div class="serif" style="font-size:26px">24/7</div><div class="label mute" style="font-size:6.5px">Every day</div></div>
+          <div><div class="serif" style="font-size:26px">10</div><div class="label mute" style="font-size:6.5px">States + D.C.</div></div>
+          <div><div class="serif" style="font-size:26px">9</div><div class="label mute" style="font-size:6.5px">Airports</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="m" style="top:8.35in">
+    <div class="hair"></div>
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:.4in;margin-top:20px">
+      <div><div class="label">Our Standard</div><p class="body" style="margin-top:9px">Immaculate vehicles, professional chauffeurs, and a ride that feels calm from curb to curb. Nothing left to chance.</p></div>
+      <div><div class="label">Our Promise</div><p class="body" style="margin-top:9px">Reliable, safe, and on time — because a missed pickup isn't an inconvenience to us, it's a broken promise to you.</p></div>
+      <div><div class="label">Our Reach</div><p class="body" style="margin-top:9px">One dependable partner for the whole Northeast corridor — so you never have to hand your client to a stranger.</p></div>
+    </div>
+  </div>
+
+  <div class="folio"><span>The Partner Edition</span><img src="../assets/absolute_logo.png" alt=""><span>03</span></div>
+</section>
+
+<!-- ================= A3 · THE CHAUFFEURS ================= -->
+<section class="page">
+  <img src="../assets/chauffeur.jpg" style="position:absolute;left:0;top:0;width:4.1in;height:11in;object-fit:cover;object-position:42% center" alt="">
+  <div style="position:absolute;left:4.1in;top:0;bottom:0;width:1px;background:var(--hair)"></div>
+
+  <div style="position:absolute;left:4.55in;right:.65in;top:.55in;bottom:.45in;display:flex;flex-direction:column">
+    <div class="label">04 — The Chauffeurs</div>
+    <div class="hair" style="margin-top:10px"></div>
+    <h2 class="serif" style="font-size:40px;line-height:1.02;margin-top:30px">The car makes the first impression. <i>The chauffeur makes it last.</i></h2>
+    <p class="body drop" style="margin-top:24px;font-size:10.4px">Great chauffeurs aren't found. They're built — and we do the unglamorous work most companies skip in order to build them. The vetting. The background checks. The commercial licensing. The training on the hundred small things a client only notices when they're missing.</p>
+    <p class="body" style="margin-top:12px;font-size:10.4px">Why go that hard? Because you put your name on the line every time you recommend someone. So ours show up early, dressed sharp, and unshakable when travel goes sideways — the kind of professional who makes you look brilliant for sending them.</p>
+    <p class="serif" style="font-size:21px;line-height:1.2;margin-top:26px;padding-left:16px;border-left:1px solid var(--ink)"><i>Do that enough times, and the trust you've spent years building doesn't just hold — it compounds.</i></p>
+
+    <div style="margin-top:auto">
+      <div style="border-top:1px solid var(--hair);padding:12px 0;display:grid;grid-template-columns:.45in 1fr"><span class="serif" style="font-size:20px"><i>I</i></span><div><div class="label" style="font-size:7px">Vetted &amp; Licensed</div><p class="body" style="font-size:8.6px;margin-top:4px">Background-checked, licensed to commercial livery standards. Never an app driver.</p></div></div>
+      <div style="border-top:1px solid var(--hair);padding:12px 0;display:grid;grid-template-columns:.45in 1fr"><span class="serif" style="font-size:20px"><i>II</i></span><div><div class="label" style="font-size:7px">Trained in Hospitality</div><p class="body" style="font-size:8.6px;margin-top:4px">Meet-and-greet, luggage, and the quiet courtesies of a five-star arrival.</p></div></div>
+      <div style="border-top:1px solid var(--hair);padding:12px 0;display:grid;grid-template-columns:.45in 1fr"><span class="serif" style="font-size:20px"><i>III</i></span><div><div class="label" style="font-size:7px">Local Expertise</div><p class="body" style="font-size:8.6px;margin-top:4px">Airports, cruise ports, and back roads known by heart.</p></div></div>
+      <div style="border-top:1px solid var(--hair);border-bottom:1px solid var(--hair);padding:12px 0;display:grid;grid-template-columns:.45in 1fr"><span class="serif" style="font-size:20px"><i>IV</i></span><div><div class="label" style="font-size:7px">Discreet &amp; Composed</div><p class="body" style="font-size:8.6px;margin-top:4px">Calm under pressure, and confidential. What happens in the car stays in the car.</p></div></div>
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-top:16px;font-size:7px;letter-spacing:.3em;text-transform:uppercase;color:var(--mute)"><span>The Partner Edition</span><span>07</span></div>
+    </div>
+  </div>
+</section>
+
+</body></html>
