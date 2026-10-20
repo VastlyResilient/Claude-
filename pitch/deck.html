@@ -131,7 +131,7 @@ p{margin:0;line-height:1.72}
 .rate{width:100%;border-collapse:collapse}
 .rate th{font-family:'Jost';font-weight:600;font-size:8px;letter-spacing:.2em;text-transform:uppercase;color:var(--muted);text-align:left;padding:0 0 11px;border-bottom:1px solid var(--ink)}
 .rate th.r,.rate td.r{text-align:right}
-.rate td{padding:12.5px 0;border-bottom:1px solid var(--line);font-size:11px;color:#2f2d29;font-weight:300}
+.rate td{padding:10.5px 0;border-bottom:1px solid var(--line);font-size:11px;color:#2f2d29;font-weight:300}
 .rate td .from{font-family:'Jost';font-weight:500;color:var(--ink)}
 .rate td .to{color:var(--muted)}
 .rate td.r{font-family:'Playfair';font-weight:500;font-style:italic;color:var(--ink);font-size:11px;letter-spacing:.04em}
@@ -163,9 +163,22 @@ p{margin:0;line-height:1.72}
 .contact .b .v.big{font-family:'Playfair';font-weight:700;font-size:19px}
 
 .pin{position:absolute}
+
+/* ============ LUXURY ICON SYSTEM (hairline glyphs in fine medallions) ============ */
+.mi{display:inline-flex;align-items:center;justify-content:center;width:30px;height:30px;border-radius:50%;border:1px solid rgba(12,12,13,.22);color:var(--ink);flex:0 0 auto}
+.mi svg,.ii{fill:none;stroke:currentColor;stroke-width:1.15;stroke-linecap:round;stroke-linejoin:round}
+.mi svg{width:15px;height:15px}
+.dark .mi,.mi.inv{border-color:rgba(246,243,236,.32);color:var(--ivory)}
+.mi.lg{width:42px;height:42px}.mi.lg svg{width:19px;height:19px}
+.mi.sm{width:22px;height:22px}.mi.sm svg{width:10.5px;height:10.5px}
+.mi.blk{display:flex;margin-bottom:12px}
+.mi.ctr{display:flex;margin:0 auto 12px}
+.ii{display:inline-block;width:10px;height:10px;vertical-align:-1.5px;margin-right:7px}
 </style>
 </head>
 <body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs><symbol id="i-home" viewBox="0 0 24 24"><path d="M4 11l8-6.5 8 6.5M6 9.5V20h12V9.5"/><path d="M12 17.2s-2.7-1.7-2.7-3.4a1.35 1.35 0 0 1 2.7-.45 1.35 1.35 0 0 1 2.7.45c0 1.7-2.7 3.4-2.7 3.4z"/></symbol><symbol id="i-shield" viewBox="0 0 24 24"><path d="M12 3l7 3v5c0 4.6-3 8.3-7 10-4-1.7-7-5.4-7-10V6z"/><path d="M9 12l2 2 4-4"/></symbol><symbol id="i-compass" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M15.5 8.5l-2.2 4.8-4.8 2.2 2.2-4.8z"/><path d="M12 3v1.6M12 19.4V21M3 12h1.6M19.4 12H21"/></symbol><symbol id="i-car" viewBox="0 0 24 24"><path d="M3 15.5V13l2.2-4h9.3l3.6 4H21v2.5"/><path d="M3 15.5h1.9M9.1 15.5h5.8M19.1 15.5H21M5.5 13h13"/><circle cx="7" cy="16" r="2"/><circle cx="17" cy="16" r="2"/></symbol><symbol id="i-gem" viewBox="0 0 24 24"><path d="M6.5 4h11l3.5 5-9 11L3 9z"/><path d="M3 9h18M9.5 4L8 9l4 11 4-11-1.5-5"/></symbol><symbol id="i-umbrella" viewBox="0 0 24 24"><path d="M3 12a9 9 0 0 1 18 0z"/><path d="M12 12v6.5a2 2 0 0 1-4 0M12 3v-.5"/></symbol><symbol id="i-sparkle" viewBox="0 0 24 24"><path d="M11 4l1.5 5 5 1.5-5 1.5-1.5 5-1.5-5-5-1.5 5-1.5z"/><path d="M18.5 15.5l.6 1.9 1.9.6-1.9.6-.6 1.9-.6-1.9-1.9-.6 1.9-.6z"/></symbol><symbol id="i-gauge" viewBox="0 0 24 24"><path d="M4 17a8 8 0 1 1 16 0"/><path d="M12 17l4.2-5.2"/><circle cx="12" cy="17" r="1.1"/><path d="M6.3 11.3l1 .8M12 8.6V10M17.7 11.3l-1 .8"/></symbol><symbol id="i-tie" viewBox="0 0 24 24"><path d="M8 4l4 3 4-3"/><path d="M12 7l-2 2 1.2 1.6L9.3 18.5 12 21l2.7-2.5-1.9-7.9L14 9z"/></symbol><symbol id="i-people" viewBox="0 0 24 24"><circle cx="9" cy="8" r="3.2"/><path d="M3 20c0-3.4 2.7-5.6 6-5.6s6 2.2 6 5.6"/><circle cx="17.2" cy="9" r="2.5"/><path d="M16.4 14.4c2.8.1 4.6 2 4.6 4.8"/></symbol><symbol id="i-seal" viewBox="0 0 24 24"><circle cx="12" cy="9.5" r="6"/><path d="M8.6 14.4L7.2 21l4.8-2.4 4.8 2.4-1.4-6.6"/><path d="M9.6 9.6l1.7 1.7 3.1-3.2"/></symbol><symbol id="i-bell" viewBox="0 0 24 24"><path d="M5.5 17.5a6.5 6.5 0 0 1 13 0z"/><path d="M3 20h18M12 11V9M10.4 8.6h3.2"/></symbol><symbol id="i-pin" viewBox="0 0 24 24"><path d="M12 21s-6.5-6-6.5-11a6.5 6.5 0 0 1 13 0c0 5-6.5 11-6.5 11z"/><circle cx="12" cy="10" r="2.3"/></symbol><symbol id="i-lock" viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="10" rx="1.5"/><path d="M8 11V8a4 4 0 0 1 8 0v3M12 15v2.2"/></symbol><symbol id="i-plane" viewBox="0 0 24 24"><path d="M12 2.5c.8 0 1.4.7 1.4 1.5V10l7.6 4.6v1.8l-7.6-2.3v4.6l2.1 1.6V22L12 21l-3.5 1v-1.7l2.1-1.6v-4.6L3 16.4v-1.8L10.6 10V4c0-.8.6-1.5 1.4-1.5z"/></symbol><symbol id="i-ship" viewBox="0 0 24 24"><path d="M3 15l2.2 4.5h13.6L21 15z"/><path d="M6 15v-4h12v4M9 11V7.5h6V11M12 7.5V4.5"/></symbol><symbol id="i-train" viewBox="0 0 24 24"><rect x="6" y="3" width="12" height="14" rx="3"/><path d="M6 10h12M8.5 17l-2 4M15.5 17l2 4"/><circle cx="9" cy="13.5" r=".6"/><circle cx="15" cy="13.5" r=".6"/></symbol><symbol id="i-briefcase" viewBox="0 0 24 24"><rect x="3" y="7.5" width="18" height="12" rx="1.5"/><path d="M8.5 7.5v-2A1.5 1.5 0 0 1 10 4h4a1.5 1.5 0 0 1 1.5 1.5v2M3 12.5h18M11 12.5V14h2v-1.5"/></symbol><symbol id="i-rings" viewBox="0 0 24 24"><circle cx="9" cy="14.5" r="5"/><circle cx="15" cy="14.5" r="5"/><path d="M13.6 4.5h2.8l1 1.3-2.4 2.4-2.4-2.4z"/></symbol><symbol id="i-star" viewBox="0 0 24 24"><path d="M12 3.5l2.5 5.3 5.8.7-4.3 4 1.1 5.7L12 16.4l-5.1 2.8 1.1-5.7-4.3-4 5.8-.7z"/></symbol><symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3.5 2"/></symbol><symbol id="i-doc" viewBox="0 0 24 24"><path d="M6 3h9l4 4v14H6z"/><path d="M15 3v4h4M9 11h7M9 14h7M9 17h4"/></symbol><symbol id="i-personcheck" viewBox="0 0 24 24"><circle cx="10" cy="8" r="3.5"/><path d="M3.5 20c0-3.6 2.9-6 6.5-6 1.3 0 2.5.3 3.5.8M15 17.5l2 2 4-4"/></symbol><symbol id="i-phone" viewBox="0 0 24 24"><path d="M6.6 3.5h2.6l1.6 4-2 1.3a11 11 0 0 0 6.4 6.4l1.3-2 4 1.6v2.6a2 2 0 0 1-2 2.1A15 15 0 0 1 4.5 6a2 2 0 0 1 2.1-2.5z"/></symbol><symbol id="i-mail" viewBox="0 0 24 24"><rect x="3" y="5.5" width="18" height="13" rx="1.5"/><path d="M3.5 6.5l8.5 6.5 8.5-6.5"/></symbol><symbol id="i-globe" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><ellipse cx="12" cy="12" rx="4" ry="9"/><path d="M3 12h18"/></symbol><symbol id="i-glass" viewBox="0 0 24 24"><path d="M7 4h10l-1 5a4 4 0 0 1-8 0z"/><path d="M12 13v7M8.5 20h7M7.4 7h9.2"/></symbol><symbol id="i-headset" viewBox="0 0 24 24"><path d="M4 14v-2a8 8 0 0 1 16 0v2"/><rect x="3" y="13" width="3.5" height="6" rx="1"/><rect x="17.5" y="13" width="3.5" height="6" rx="1"/><path d="M19.2 19c0 1.5-2 2.5-5 2.5"/></symbol></defs></svg>
+
 
 <!-- ============================================================ 1 · COVER ============================================================ -->
 <section class="page dark" style="overflow:hidden;background:#070707">
@@ -202,12 +215,12 @@ p{margin:0;line-height:1.72}
 
       <div style="margin-top:22px;flex:1">
         <div class="qa" style="gap:19px 26px">
-          <div class="item"><div class="q"><span class="num">01</span>Who we are</div><div class="a">A family-owned luxury ground-transportation company based in North Haven, CT, chauffeuring guests across the Northeast since 2007.</div></div>
-          <div class="item"><div class="q"><span class="num">02</span>Why you can trust us</div><div class="a">Licensed by Connecticut and federally (U.S. DOT 1567094), fully insured, and reachable 24 hours a day, 365 days a year. The owners answer the phone.</div></div>
-          <div class="item"><div class="q"><span class="num">03</span>Where we go</div><div class="a">Connecticut and every bordering state — NY, NJ, MA, RI and beyond — plus nine regional airports and every major cruise port in the region.</div></div>
-          <div class="item"><div class="q"><span class="num">04</span>What we drive</div><div class="a">One immaculate, uniformly black fleet: executive sedans, full-size SUVs, group Sprinters, super-stretch limousines, and an all-electric option.</div></div>
-          <div class="item"><div class="q"><span class="num">05</span>What makes us different</div><div class="a">We don't hand your client a car. We hand them an arrival that reflects the standard your agency already set for them.</div></div>
-          <div class="item"><div class="q"><span class="num">06</span>Why it lowers your risk</div><div class="a">When a flight slips at 4 a.m. or plans change last-minute, you want a partner who already has the answer. That is the entire job.</div></div>
+          <div class="item"><span class="mi blk"><svg><use href="#i-home"/></svg></span><div class="q"><span class="num">01</span>Who we are</div><div class="a">A family-owned luxury ground-transportation company based in North Haven, CT, chauffeuring guests across the Northeast since 2007.</div></div>
+          <div class="item"><span class="mi blk"><svg><use href="#i-shield"/></svg></span><div class="q"><span class="num">02</span>Why you can trust us</div><div class="a">Licensed by Connecticut and federally (U.S. DOT 1567094), fully insured, and reachable 24 hours a day, 365 days a year. The owners answer the phone.</div></div>
+          <div class="item"><span class="mi blk"><svg><use href="#i-compass"/></svg></span><div class="q"><span class="num">03</span>Where we go</div><div class="a">Connecticut and every bordering state — NY, NJ, MA, RI and beyond — plus nine regional airports and every major cruise port in the region.</div></div>
+          <div class="item"><span class="mi blk"><svg><use href="#i-car"/></svg></span><div class="q"><span class="num">04</span>What we drive</div><div class="a">One immaculate, uniformly black fleet: executive sedans, full-size SUVs, group Sprinters, super-stretch limousines, and an all-electric option.</div></div>
+          <div class="item"><span class="mi blk"><svg><use href="#i-gem"/></svg></span><div class="q"><span class="num">05</span>What makes us different</div><div class="a">We don't hand your client a car. We hand them an arrival that reflects the standard your agency already set for them.</div></div>
+          <div class="item"><span class="mi blk"><svg><use href="#i-umbrella"/></svg></span><div class="q"><span class="num">06</span>Why it lowers your risk</div><div class="a">When a flight slips at 4 a.m. or plans change last-minute, you want a partner who already has the answer. That is the entire job.</div></div>
         </div>
       </div>
 
@@ -338,13 +351,13 @@ p{margin:0;line-height:1.72}
       </div>
     </div>
 
-    <div style="margin-top:34px;border-top:1px solid var(--line);padding-top:22px">
-      <div class="kick plain" style="color:var(--ink);margin-bottom:16px">The Standard Behind Every Vehicle</div>
+    <div style="margin-top:20px;border-top:1px solid var(--line);padding-top:16px">
+      <div class="kick plain" style="color:var(--ink);margin-bottom:12px">The Standard Behind Every Vehicle</div>
       <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:26px">
-        <div><div style="font-family:'Playfair';font-weight:700;font-size:12px;color:var(--ink)">Detailed before dispatch</div><p style="font-size:9.3px;color:var(--muted);line-height:1.6;margin-top:7px;font-weight:300">Every interior is cleaned and inspected before it reaches your client — a spotless cabin, every single time.</p></div>
-        <div><div style="font-family:'Playfair';font-weight:700;font-size:12px;color:var(--ink)">Maintained &amp; road-ready</div><p style="font-size:9.3px;color:var(--muted);line-height:1.6;margin-top:7px;font-weight:300">Routine service and safety checks keep the whole fleet reliable. Dependability is a schedule, not a hope.</p></div>
-        <div><div style="font-family:'Playfair';font-weight:700;font-size:12px;color:var(--ink)">One uniform presentation</div><p style="font-size:9.3px;color:var(--muted);line-height:1.6;margin-top:7px;font-weight:300">All black, professionally kept, never mismatched — a fleet that reinforces your brand instead of competing with it.</p></div>
-        <div><div style="font-family:'Playfair';font-weight:700;font-size:12px;color:var(--ink)">Right-sized to the moment</div><p style="font-size:9.3px;color:var(--muted);line-height:1.6;margin-top:7px;font-weight:300">From a solo executive to a 14-guest group or an 8-passenger celebration, the fleet flexes to the trip.</p></div>
+        <div><span class="mi sm blk" style="margin-bottom:8px"><svg><use href="#i-sparkle"/></svg></span><div style="font-family:'Playfair';font-weight:700;font-size:12px;color:var(--ink)">Detailed before dispatch</div><p style="font-size:9.3px;color:var(--muted);line-height:1.6;margin-top:7px;font-weight:300">Every interior is cleaned and inspected before it reaches your client — a spotless cabin, every single time.</p></div>
+        <div><span class="mi sm blk" style="margin-bottom:8px"><svg><use href="#i-gauge"/></svg></span><div style="font-family:'Playfair';font-weight:700;font-size:12px;color:var(--ink)">Maintained &amp; road-ready</div><p style="font-size:9.3px;color:var(--muted);line-height:1.6;margin-top:7px;font-weight:300">Routine service and safety checks keep the whole fleet reliable. Dependability is a schedule, not a hope.</p></div>
+        <div><span class="mi sm blk" style="margin-bottom:8px"><svg><use href="#i-tie"/></svg></span><div style="font-family:'Playfair';font-weight:700;font-size:12px;color:var(--ink)">One uniform presentation</div><p style="font-size:9.3px;color:var(--muted);line-height:1.6;margin-top:7px;font-weight:300">All black, professionally kept, never mismatched — a fleet that reinforces your brand instead of competing with it.</p></div>
+        <div><span class="mi sm blk" style="margin-bottom:8px"><svg><use href="#i-people"/></svg></span><div style="font-family:'Playfair';font-weight:700;font-size:12px;color:var(--ink)">Right-sized to the moment</div><p style="font-size:9.3px;color:var(--muted);line-height:1.6;margin-top:7px;font-weight:300">From a solo executive to a 14-guest group or an 8-passenger celebration, the fleet flexes to the trip.</p></div>
       </div>
     </div>
   </div>
@@ -394,10 +407,10 @@ p{margin:0;line-height:1.72}
     <p style="font-size:12.5px;color:rgba(255,255,255,.98);font-weight:300;line-height:1.85;max-width:6.9in">Great chauffeurs aren't found. They're built — and we do the unglamorous work most companies skip in order to build them. The vetting. The background checks. The commercial licensing. The training on the hundred small things a client only notices when they're missing — and the standards we refuse to lower even when lowering them would be easier and cheaper. Why go that hard? Because you put your name on the line every single time you recommend someone, and that means something to us. So ours show up early, dressed sharp, and unshakable when travel goes sideways — the kind of professional who makes the trip feel effortless and makes you look brilliant for sending them. Do that enough times, and the trust you've spent years building doesn't just hold — it compounds.</p>
     <div class="rule d" style="margin:24px 0 20px"></div>
     <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:30px">
-      <div><div style="font-family:'Playfair';font-weight:700;font-size:16px;color:var(--gold2)">Vetted &amp; Licensed</div><p style="font-size:11px;color:rgba(255,255,255,.85);margin-top:8px;line-height:1.65;font-weight:300">Background-checked and licensed to commercial livery standards — never an app driver, never a stranger.</p></div>
-      <div><div style="font-family:'Playfair';font-weight:700;font-size:16px;color:var(--gold2)">Trained in Hospitality</div><p style="font-size:11px;color:rgba(255,255,255,.85);margin-top:8px;line-height:1.65;font-weight:300">Meet-and-greet, luggage, and the quiet courtesies that turn a transfer into a five-star arrival.</p></div>
-      <div><div style="font-family:'Playfair';font-weight:700;font-size:16px;color:var(--gold2)">Local Expertise</div><p style="font-size:11px;color:rgba(255,255,255,.85);margin-top:8px;line-height:1.65;font-weight:300">Airports, cruise ports, and back-road shortcuts known by heart, so timing is never left to chance.</p></div>
-      <div><div style="font-family:'Playfair';font-weight:700;font-size:16px;color:var(--gold2)">Discreet &amp; Composed</div><p style="font-size:11px;color:rgba(255,255,255,.85);margin-top:8px;line-height:1.65;font-weight:300">Impeccably dressed, calm under pressure, and confidential. What happens in the car stays in the car.</p></div>
+      <div><span class="mi blk"><svg><use href="#i-seal"/></svg></span><div style="font-family:'Playfair';font-weight:700;font-size:16px;color:var(--gold2)">Vetted &amp; Licensed</div><p style="font-size:11px;color:rgba(255,255,255,.85);margin-top:8px;line-height:1.65;font-weight:300">Background-checked and licensed to commercial livery standards — never an app driver, never a stranger.</p></div>
+      <div><span class="mi blk"><svg><use href="#i-bell"/></svg></span><div style="font-family:'Playfair';font-weight:700;font-size:16px;color:var(--gold2)">Trained in Hospitality</div><p style="font-size:11px;color:rgba(255,255,255,.85);margin-top:8px;line-height:1.65;font-weight:300">Meet-and-greet, luggage, and the quiet courtesies that turn a transfer into a five-star arrival.</p></div>
+      <div><span class="mi blk"><svg><use href="#i-pin"/></svg></span><div style="font-family:'Playfair';font-weight:700;font-size:16px;color:var(--gold2)">Local Expertise</div><p style="font-size:11px;color:rgba(255,255,255,.85);margin-top:8px;line-height:1.65;font-weight:300">Airports, cruise ports, and back-road shortcuts known by heart, so timing is never left to chance.</p></div>
+      <div><span class="mi blk"><svg><use href="#i-lock"/></svg></span><div style="font-family:'Playfair';font-weight:700;font-size:16px;color:var(--gold2)">Discreet &amp; Composed</div><p style="font-size:11px;color:rgba(255,255,255,.85);margin-top:8px;line-height:1.65;font-weight:300">Impeccably dressed, calm under pressure, and confidential. What happens in the car stays in the car.</p></div>
     </div>
   </div>
 </section>
@@ -410,14 +423,14 @@ p{margin:0;line-height:1.72}
     <p class="lead" style="margin-top:14px;max-width:5.4in;font-size:11px">We are proudly rooted in Connecticut — and, as our clients know, we don't stop at the state line. We serve the entire Northeast corridor and the bordering states beyond it, so you can send one client or an entire itinerary to a single, dependable partner.</p>
 
     <div style="margin-top:24px">
-      <div style="margin-bottom:9px" class="kick plain gold" >States We Serve</div>
+      <div style="margin-bottom:9px" class="kick plain gold" ><span class="mi sm"><svg><use href="#i-pin"/></svg></span>States We Serve</div>
       <div style="margin-bottom:22px">
         <span class="tag"><span class="c">CT</span>Connecticut</span><span class="tag"><span class="c">NY</span>New York</span><span class="tag"><span class="c">NJ</span>New Jersey</span><span class="tag"><span class="c">MA</span>Massachusetts</span><span class="tag"><span class="c">RI</span>Rhode Island</span><span class="tag"><span class="c">PA</span>Pennsylvania</span><span class="tag"><span class="c">VT</span>Vermont</span><span class="tag"><span class="c">NH</span>New Hampshire</span><span class="tag"><span class="c">DE</span>Delaware</span><span class="tag"><span class="c">DC</span>Washington</span>
       </div>
 
       <div class="cov-cols">
         <div>
-          <div class="kick plain gold" style="margin-bottom:12px">Airports · All Nine, Any Hour</div>
+          <div class="kick plain gold" style="margin-bottom:12px"><span class="mi sm"><svg><use href="#i-plane"/></svg></span>Airports · All Nine, Any Hour</div>
           <div style="display:grid;grid-template-columns:1fr 1fr;gap:9px 18px">
             <div class="apt"><span style="font-family:'Playfair';font-weight:700;color:var(--ink);font-size:12px;margin-right:8px">JFK</span><span style="font-size:9.5px;color:#43413b">John F. Kennedy Intl</span></div>
             <div class="apt"><span style="font-family:'Playfair';font-weight:700;color:var(--ink);font-size:12px;margin-right:8px">LGA</span><span style="font-size:9.5px;color:#43413b">LaGuardia</span></div>
@@ -431,14 +444,14 @@ p{margin:0;line-height:1.72}
           </div>
         </div>
         <div>
-          <div class="kick plain gold" style="margin-bottom:12px">Cruise Ports</div>
+          <div class="kick plain gold" style="margin-bottom:12px"><span class="mi sm"><svg><use href="#i-ship"/></svg></span>Cruise Ports</div>
           <ul style="list-style:none;margin:0 0 20px;padding:0">
             <li style="font-size:9.7px;color:#43413b;padding:4px 0 4px 15px;position:relative;font-weight:300"><span style="position:absolute;left:0;top:8px;width:5px;height:5px;border:1px solid var(--gold);transform:rotate(45deg)"></span>Cape Liberty · Bayonne, NJ</li>
             <li style="font-size:9.7px;color:#43413b;padding:4px 0 4px 15px;position:relative;font-weight:300"><span style="position:absolute;left:0;top:8px;width:5px;height:5px;border:1px solid var(--gold);transform:rotate(45deg)"></span>Manhattan Cruise Terminal</li>
             <li style="font-size:9.7px;color:#43413b;padding:4px 0 4px 15px;position:relative;font-weight:300"><span style="position:absolute;left:0;top:8px;width:5px;height:5px;border:1px solid var(--gold);transform:rotate(45deg)"></span>Brooklyn Cruise Terminal</li>
             <li style="font-size:9.7px;color:#43413b;padding:4px 0 4px 15px;position:relative;font-weight:300"><span style="position:absolute;left:0;top:8px;width:5px;height:5px;border:1px solid var(--gold);transform:rotate(45deg)"></span>Port of New York</li>
           </ul>
-          <div class="kick plain gold" style="margin-bottom:12px">Rail &amp; Interstate Hubs</div>
+          <div class="kick plain gold" style="margin-bottom:12px"><span class="mi sm"><svg><use href="#i-train"/></svg></span>Rail &amp; Interstate Hubs</div>
           <ul style="list-style:none;margin:0;padding:0">
             <li style="font-size:9.7px;color:#43413b;padding:4px 0 4px 15px;position:relative;font-weight:300"><span style="position:absolute;left:0;top:8px;width:5px;height:5px;border:1px solid var(--gold);transform:rotate(45deg)"></span>New Haven · Stamford · Bridgeport · Hartford</li>
             <li style="font-size:9.7px;color:#43413b;padding:4px 0 4px 15px;position:relative;font-weight:300"><span style="position:absolute;left:0;top:8px;width:5px;height:5px;border:1px solid var(--gold);transform:rotate(45deg)"></span>New York Penn Station &amp; Grand Central</li>
@@ -470,28 +483,28 @@ p{margin:0;line-height:1.72}
     <div class="svc" style="margin-top:24px;gap:46px 30px">
       <div class="col">
         <div class="hd">
-          <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="#0C0C0D" stroke-width="1.3"><path d="M2 16l20-6-9 12-2-5-6-1z" stroke-linejoin="round"/><path d="M11 12l7-6"/></svg>
+          <span class="mi "><svg><use href="#i-plane"/></svg></span>
           <h3>Travel &amp; Cruise Agencies</h3>
         </div>
         <ul><li>Airport transfers to all nine regional airports</li><li>Cruise-port transfers &amp; return pickups</li><li>Multi-stop and multi-day itineraries</li><li>Meet &amp; greet with name-board service</li></ul>
       </div>
       <div class="col">
         <div class="hd">
-          <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="#0C0C0D" stroke-width="1.3"><rect x="3" y="7" width="18" height="13" rx="1"/><path d="M8 7V5a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2M3 12h18"/></svg>
+          <span class="mi "><svg><use href="#i-briefcase"/></svg></span>
           <h3>Corporate &amp; Executive</h3>
         </div>
         <ul><li>Executive black-car &amp; VIP service</li><li>Roadshows and multi-leg business days</li><li>Hourly charter &amp; as-directed service</li><li>Corporate accounts with account billing</li></ul>
       </div>
       <div class="col">
         <div class="hd">
-          <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="#0C0C0D" stroke-width="1.3"><path d="M3 21V9l9-6 9 6v12" stroke-linejoin="round"/><path d="M9 21v-6h6v6"/></svg>
+          <span class="mi "><svg><use href="#i-bell"/></svg></span>
           <h3>Hotels &amp; Concierge</h3>
         </div>
         <ul><li>Guest transfers &amp; house-car programs</li><li>VIP arrivals and departures</li><li>Event and conference overflow</li><li>On-call availability for the front desk</li></ul>
       </div>
       <div class="col">
         <div class="hd">
-          <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="#0C0C0D" stroke-width="1.3"><circle cx="12" cy="14" r="5"/><path d="M9 6l3-3 3 3M12 3v6"/></svg>
+          <span class="mi "><svg><use href="#i-rings"/></svg></span>
           <h3>Wedding &amp; Event Planners</h3>
         </div>
         <ul><li>Wedding fleets &amp; bridal-party transport</li><li>Proms, sweet sixteens &amp; mitzvahs</li><li>Group shuttles for guests &amp; venues</li><li>Timed, choreographed multi-vehicle runs</li></ul>
@@ -500,7 +513,7 @@ p{margin:0;line-height:1.72}
 
     <div style="margin-top:38px;background:var(--ink);color:var(--ivory);padding:18px 22px;display:flex;align-items:center;gap:26px">
       <div style="flex:0 0 auto">
-        <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#F6F3EC" stroke-width="1.2"><path d="M12 2l1.8 3.6L18 6l-3 3 1 4.2L12 11l-4 2.2L9 9 6 6l4.2-.4z"/><circle cx="12" cy="12" r="10" opacity=".25"/></svg>
+        <span class="mi lg inv"><svg><use href="#i-star"/></svg></span>
       </div>
       <div style="flex:1">
         <div class="kick plain" style="color:var(--ivory);font-size:8.5px">And For Their Clients' Best Days Off</div>
@@ -540,7 +553,7 @@ p{margin:0;line-height:1.72}
     </div>
 
     <div style="margin-top:34px;border-top:1px solid var(--lined);padding-top:22px;display:grid;grid-template-columns:1fr 1.6fr;gap:34px;align-items:start">
-      <div class="kick plain" style="color:var(--ivory);font-size:9px;line-height:1.5">When Something<br>Goes Sideways</div>
+      <div><span class="mi blk"><svg><use href="#i-headset"/></svg></span><div class="kick plain" style="color:var(--ivory);font-size:9px;line-height:1.5">When Something<br>Goes Sideways</div></div>
       <p style="font-size:10.3px;color:rgba(246,243,236,.82);font-weight:300;line-height:1.85">Real travel breaks plans — a flight diverts, a ship debarks late, a client adds a stop on the way. What separates a partner from a vendor is the next ten minutes. Dispatch runs around the clock with backup vehicles and drivers on call, so a problem becomes a call we absorb — not one that lands back on your desk. You hear about it from us, with a fix already in motion, long before your client would ever think to complain.</p>
     </div>
 
@@ -592,17 +605,17 @@ p{margin:0;line-height:1.72}
     </div>
 
     <div style="display:flex;gap:24px;margin-top:18px">
-      <div style="flex:1"><div class="kick plain gold" style="font-size:8.5px">State &amp; Federally Licensed</div><p style="font-size:9px;color:var(--muted);margin-top:7px;line-height:1.55;font-weight:300">Licensed by Connecticut and federally authorized as an interstate carrier — not a rideshare app, not a side hustle.</p></div>
-      <div style="flex:1"><div class="kick plain gold" style="font-size:8.5px">Screened, Professional Chauffeurs</div><p style="font-size:9px;color:var(--muted);margin-top:7px;line-height:1.55;font-weight:300">Vetted, uniformed, and trained to represent your brand the moment the door opens.</p></div>
-      <div style="flex:1"><div class="kick plain gold" style="font-size:8.5px">Certificate On Request</div><p style="font-size:9px;color:var(--muted);margin-top:7px;line-height:1.55;font-weight:300">Ask, and a COI naming your agency as certificate holder is on its way — usually the same business day.</p></div>
+      <div style="flex:1"><span class="mi blk"><svg><use href="#i-seal"/></svg></span><div class="kick plain gold" style="font-size:8.5px">State &amp; Federally Licensed</div><p style="font-size:9px;color:var(--muted);margin-top:7px;line-height:1.55;font-weight:300">Licensed by Connecticut and federally authorized as an interstate carrier — not a rideshare app, not a side hustle.</p></div>
+      <div style="flex:1"><span class="mi blk"><svg><use href="#i-personcheck"/></svg></span><div class="kick plain gold" style="font-size:8.5px">Screened, Professional Chauffeurs</div><p style="font-size:9px;color:var(--muted);margin-top:7px;line-height:1.55;font-weight:300">Vetted, uniformed, and trained to represent your brand the moment the door opens.</p></div>
+      <div style="flex:1"><span class="mi blk"><svg><use href="#i-doc"/></svg></span><div class="kick plain gold" style="font-size:8.5px">Certificate On Request</div><p style="font-size:9px;color:var(--muted);margin-top:7px;line-height:1.55;font-weight:300">Ask, and a COI naming your agency as certificate holder is on its way — usually the same business day.</p></div>
     </div>
 
     <div style="margin-top:30px;border-top:1px solid var(--line);padding-top:22px">
       <div class="kick plain" style="color:var(--ink);margin-bottom:16px">What This Means For Your Agency</div>
       <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:30px">
-        <div><div style="font-family:'Playfair';font-weight:700;font-size:12px;color:var(--ink)">Your reputation is covered, too</div><p style="font-size:9.3px;color:var(--muted);line-height:1.65;margin-top:7px;font-weight:300">Refer a fully licensed, fully insured carrier and the liability that would otherwise shadow your recommendation sits with us — not with you.</p></div>
-        <div><div style="font-family:'Playfair';font-weight:700;font-size:12px;color:var(--ink)">Coverage built for livery</div><p style="font-size:9.3px;color:var(--muted);line-height:1.65;margin-top:7px;font-weight:300">Commercial passenger protection, written for professional transport — a different world from a personal auto policy or a rideshare app's patchwork.</p></div>
-        <div><div style="font-family:'Playfair';font-weight:700;font-size:12px;color:var(--ink)">Paperwork at your pace</div><p style="font-size:9.3px;color:var(--muted);line-height:1.65;margin-top:7px;font-weight:300">Name the certificate holder and a COI for your corporate client or a venue is typically in your inbox the same business day.</p></div>
+        <div><span class="mi blk"><svg><use href="#i-shield"/></svg></span><div style="font-family:'Playfair';font-weight:700;font-size:12px;color:var(--ink)">Your reputation is covered, too</div><p style="font-size:9.3px;color:var(--muted);line-height:1.65;margin-top:7px;font-weight:300">Refer a fully licensed, fully insured carrier and the liability that would otherwise shadow your recommendation sits with us — not with you.</p></div>
+        <div><span class="mi blk"><svg><use href="#i-umbrella"/></svg></span><div style="font-family:'Playfair';font-weight:700;font-size:12px;color:var(--ink)">Coverage built for livery</div><p style="font-size:9.3px;color:var(--muted);line-height:1.65;margin-top:7px;font-weight:300">Commercial passenger protection, written for professional transport — a different world from a personal auto policy or a rideshare app's patchwork.</p></div>
+        <div><span class="mi blk"><svg><use href="#i-doc"/></svg></span><div style="font-family:'Playfair';font-weight:700;font-size:12px;color:var(--ink)">Paperwork at your pace</div><p style="font-size:9.3px;color:var(--muted);line-height:1.65;margin-top:7px;font-weight:300">Name the certificate holder and a COI for your corporate client or a venue is typically in your inbox the same business day.</p></div>
       </div>
     </div>
   </div>
@@ -620,16 +633,16 @@ p{margin:0;line-height:1.72}
     <p style="margin-top:16px;max-width:4.6in;font-size:11px;color:rgba(246,243,236,.82);font-weight:300;line-height:1.8">Partners don't wait in a queue. Your reservations, quotes, and last-minute changes come to a priority line — answered promptly, day or night.</p>
 
     <div style="margin-top:36px;border:1px solid var(--lined);padding:36px 54px;background:rgba(255,255,255,.02)">
-      <div style="font-size:9px;letter-spacing:.34em;text-transform:uppercase;color:var(--ivory)">Preferred Partner Reservations</div>
+      <span class="mi lg ctr inv"><svg><use href="#i-phone"/></svg></span><div style="font-size:9px;letter-spacing:.34em;text-transform:uppercase;color:var(--ivory)">Preferred Partner Reservations</div>
       <div style="font-family:'Playfair';font-weight:700;font-size:46px;color:#fff;margin-top:14px;letter-spacing:.01em">(203) 938-0000</div>
       <div style="width:40px;height:1px;background:var(--gold);margin:18px auto"></div>
-      <div style="font-size:10px;letter-spacing:.22em;text-transform:uppercase;color:rgba(246,243,236,.7)">Available 24 Hours · 365 Days</div>
+      <div style="font-size:10px;letter-spacing:.22em;text-transform:uppercase;color:rgba(246,243,236,.7)"><svg class="ii"><use href="#i-clock"/></svg>Available 24 Hours · 365 Days</div>
     </div>
 
     <div style="display:flex;gap:48px;margin-top:36px">
-      <div style="text-align:center"><div style="font-size:8px;letter-spacing:.24em;text-transform:uppercase;color:var(--ivory);margin-bottom:7px">Reservations Email</div><div style="font-size:11px;color:var(--ivory);font-weight:300">info@absolute-transportation.com</div></div>
+      <div style="text-align:center"><span class="mi sm ctr inv"><svg><use href="#i-mail"/></svg></span><div style="font-size:8px;letter-spacing:.24em;text-transform:uppercase;color:var(--ivory);margin-bottom:7px">Reservations Email</div><div style="font-size:11px;color:var(--ivory);font-weight:300">info@absolute-transportation.com</div></div>
       <div style="width:1px;background:var(--lined)"></div>
-      <div style="text-align:center"><div style="font-size:8px;letter-spacing:.24em;text-transform:uppercase;color:var(--ivory);margin-bottom:7px">Partnerships &amp; Accounts</div><div style="font-size:11px;color:var(--ivory);font-weight:300">management@absolute-transportation.com</div></div>
+      <div style="text-align:center"><span class="mi sm ctr inv"><svg><use href="#i-briefcase"/></svg></span><div style="font-size:8px;letter-spacing:.24em;text-transform:uppercase;color:var(--ivory);margin-bottom:7px">Partnerships &amp; Accounts</div><div style="font-size:11px;color:var(--ivory);font-weight:300">management@absolute-transportation.com</div></div>
     </div>
 
     <p style="margin-top:40px;font-family:'Playfair';font-style:italic;font-weight:400;font-size:13px;color:rgba(246,243,236,.8);max-width:5in">“The fastest way to lose an agency's trust is a phone that rings out. Ours doesn't.”</p>
@@ -657,10 +670,10 @@ p{margin:0;line-height:1.72}
     </table>
 
     <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-top:30px">
-      <div style="border:1px solid var(--line);padding:15px 15px 17px"><div style="font-family:'Playfair';font-weight:700;font-size:13px">Hourly Charter</div><p style="font-size:8.8px;color:var(--muted);margin-top:7px;line-height:1.5;font-weight:300">As-directed service with a minimum, ideal for events &amp; roadshows.</p></div>
-      <div style="border:1px solid var(--line);padding:15px 15px 17px"><div style="font-family:'Playfair';font-weight:700;font-size:13px">Executive Service</div><p style="font-size:8.8px;color:var(--muted);margin-top:7px;line-height:1.5;font-weight:300">Priority black-car for corporate &amp; VIP travel.</p></div>
-      <div style="border:1px solid var(--line);padding:15px 15px 17px"><div style="font-family:'Playfair';font-weight:700;font-size:13px">Sprinter &amp; Group</div><p style="font-size:8.8px;color:var(--muted);margin-top:7px;line-height:1.5;font-weight:300">Flat group rates for parties &amp; corporate teams up to 14.</p></div>
-      <div style="border:1px solid var(--line);padding:15px 15px 17px"><div style="font-family:'Playfair';font-weight:700;font-size:13px">Limousine &amp; Events</div><p style="font-size:8.8px;color:var(--muted);margin-top:7px;line-height:1.5;font-weight:300">Package pricing for weddings &amp; celebrations.</p></div>
+      <div style="border:1px solid var(--line);padding:15px 15px 17px"><span class="mi sm blk" style="margin-bottom:9px"><svg><use href="#i-clock"/></svg></span><div style="font-family:'Playfair';font-weight:700;font-size:13px">Hourly Charter</div><p style="font-size:8.8px;color:var(--muted);margin-top:7px;line-height:1.5;font-weight:300">As-directed service with a minimum, ideal for events &amp; roadshows.</p></div>
+      <div style="border:1px solid var(--line);padding:15px 15px 17px"><span class="mi sm blk" style="margin-bottom:9px"><svg><use href="#i-briefcase"/></svg></span><div style="font-family:'Playfair';font-weight:700;font-size:13px">Executive Service</div><p style="font-size:8.8px;color:var(--muted);margin-top:7px;line-height:1.5;font-weight:300">Priority black-car for corporate &amp; VIP travel.</p></div>
+      <div style="border:1px solid var(--line);padding:15px 15px 17px"><span class="mi sm blk" style="margin-bottom:9px"><svg><use href="#i-people"/></svg></span><div style="font-family:'Playfair';font-weight:700;font-size:13px">Sprinter &amp; Group</div><p style="font-size:8.8px;color:var(--muted);margin-top:7px;line-height:1.5;font-weight:300">Flat group rates for parties &amp; corporate teams up to 14.</p></div>
+      <div style="border:1px solid var(--line);padding:15px 15px 17px"><span class="mi sm blk" style="margin-bottom:9px"><svg><use href="#i-glass"/></svg></span><div style="font-family:'Playfair';font-weight:700;font-size:13px">Limousine &amp; Events</div><p style="font-size:8.8px;color:var(--muted);margin-top:7px;line-height:1.5;font-weight:300">Package pricing for weddings &amp; celebrations.</p></div>
     </div>
 
     <div style="margin-top:36px;background:var(--ink);color:var(--ivory);padding:22px 26px;display:flex;align-items:center;justify-content:space-between;gap:26px">
@@ -669,7 +682,7 @@ p{margin:0;line-height:1.72}
         <p style="font-size:11px;color:rgba(246,243,236,.9);font-weight:300;margin-top:9px;line-height:1.6;max-width:4.2in">Please call or email and we'll quote your client right away. Every rate includes a professional chauffeur, tolls, meet &amp; greet, and flight tracking — gratuity and parking billed at cost.</p>
       </div>
       <div style="text-align:right;flex:0 0 auto">
-        <div style="font-family:'Playfair';font-weight:700;font-size:20px;color:#fff;letter-spacing:.01em">(203) 938-0000</div>
+        <div style="display:flex;align-items:center;justify-content:flex-end;gap:12px"><span class="mi inv"><svg><use href="#i-phone"/></svg></span><div style="font-family:'Playfair';font-weight:700;font-size:20px;color:#fff;letter-spacing:.01em">(203) 938-0000</div></div>
         <div style="font-size:9.5px;color:var(--ivory);margin-top:4px;letter-spacing:.02em">info@absolute-transportation.com</div>
       </div>
     </div>
@@ -761,10 +774,10 @@ p{margin:0;line-height:1.72}
     <div class="rule d" style="margin-bottom:26px"></div>
     <div style="display:flex;justify-content:space-between;align-items:flex-end">
       <div class="contact" style="flex:1">
-        <div class="b"><div class="l">Reservations · 24/7</div><div class="v big" style="color:var(--ivory)">(203) 938-0000</div></div>
-        <div class="b"><div class="l">Home Base</div><div class="v">341 Washington Avenue<br>North Haven, CT 06473</div></div>
-        <div class="b"><div class="l">Email</div><div class="v">info@absolute-transportation.com</div></div>
-        <div class="b"><div class="l">Online</div><div class="v" style="color:var(--ivory)">absolute-transportation.com</div></div>
+        <div class="b"><div class="l"><svg class="ii"><use href="#i-phone"/></svg>Reservations · 24/7</div><div class="v big" style="color:var(--ivory)">(203) 938-0000</div></div>
+        <div class="b"><div class="l"><svg class="ii"><use href="#i-pin"/></svg>Home Base</div><div class="v">341 Washington Avenue<br>North Haven, CT 06473</div></div>
+        <div class="b"><div class="l"><svg class="ii"><use href="#i-mail"/></svg>Email</div><div class="v">info@absolute-transportation.com</div></div>
+        <div class="b"><div class="l"><svg class="ii"><use href="#i-globe"/></svg>Online</div><div class="v" style="color:var(--ivory)">absolute-transportation.com</div></div>
       </div>
       <div style="flex:0 0 auto;text-align:right;margin-left:30px">
         <img src="assets/absolute_logo.png" style="width:2.9in;object-fit:contain" alt="Absolute Transportation">
