@@ -1,0 +1,831 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Absolute Transportation × Subway</title>
+<style>
+/* ============ FONTS ============ */
+@font-face{font-family:'Playfair';src:url('../assets/playfair-700.woff2') format('woff2');font-weight:700;font-style:normal;font-display:block}
+@font-face{font-family:'Playfair';src:url('../assets/playfair-500.woff2') format('woff2');font-weight:500;font-style:normal;font-display:block}
+@font-face{font-family:'Playfair';src:url('../assets/playfair-400i.woff2') format('woff2');font-weight:400;font-style:italic;font-display:block}
+@font-face{font-family:'Cormorant';src:url('../assets/cormorant-300.woff2') format('woff2');font-weight:300;font-style:normal;font-display:block}
+@font-face{font-family:'Cormorant';src:url('../assets/cormorant-400i.woff2') format('woff2');font-weight:400;font-style:italic;font-display:block}
+@font-face{font-family:'Inter';src:url('../assets/inter-300.woff2') format('woff2');font-weight:300;font-style:normal;font-display:block}
+@font-face{font-family:'Inter';src:url('../assets/inter-500.woff2') format('woff2');font-weight:500;font-style:normal;font-display:block}
+@font-face{font-family:'Jost';src:url('../assets/jost-300.woff2') format('woff2');font-weight:300;font-style:normal;font-display:block}
+@font-face{font-family:'Jost';src:url('../assets/jost-400.woff2') format('woff2');font-weight:400;font-style:normal;font-display:block}
+@font-face{font-family:'Jost';src:url('../assets/jost-500.woff2') format('woff2');font-weight:500;font-style:normal;font-display:block}
+@font-face{font-family:'Jost';src:url('../assets/jost-600.woff2') format('woff2');font-weight:600;font-style:normal;font-display:block}
+
+/* ============ TOKENS ============ */
+:root{
+  --ink:#0C0C0D;        /* near black */
+  --onyx:#111113;       /* panel black */
+  --ivory:#F6F3EC;      /* warm paper */
+  --paper:#FCFBF8;
+  --muted:#6E6A61;      /* soft grey-brown */
+  --muted2:#918C81;
+  --line:#E4DFD3;       /* hairline on light */
+  --lined:rgba(255,255,255,.14); /* hairline on dark */
+  --gold:#0C0C0D;       /* was gold — now black; overridden to ivory on .dark */
+  --gold2:#F6F3EC;      /* was champagne — now off-white for dark contexts */
+  --goldd:#8C6E32;
+}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0;background:#3a3a3d}
+body{font-family:'Jost',sans-serif;color:var(--ink);-webkit-font-smoothing:antialiased}
+@page{size:8.5in 11in;margin:0}
+
+.page{
+  position:relative;width:8.5in;height:11in;overflow:hidden;
+  background:var(--paper);page-break-after:always;break-after:page;
+  -webkit-print-color-adjust:exact;print-color-adjust:exact;
+}
+.page:last-child{page-break-after:auto;break-after:auto}
+/* screen preview spacing only */
+@media screen{.page{margin:22px auto;box-shadow:0 24px 70px rgba(0,0,0,.5)}}
+
+.dark{background:var(--ink);color:var(--ivory);--gold:#F6F3EC;--gold2:#F6F3EC}
+.pad{padding:0.92in 0.85in}
+
+/* ---- shared type ---- */
+.kick{font-family:'Jost';font-weight:500;font-size:9.5px;letter-spacing:.34em;text-transform:uppercase;color:var(--ink);display:flex;align-items:center;gap:12px}
+.kick::before{content:"";width:26px;height:1px;background:var(--gold);display:inline-block;flex:0 0 auto}
+.kick.center{justify-content:center}
+.kick.plain::before{display:none}
+h1,h2,h3{font-family:'Playfair';font-weight:700;margin:0;letter-spacing:-.01em}
+.display{font-family:'Playfair';font-weight:700;line-height:1.02;letter-spacing:-.015em}
+em,.it{font-style:italic;font-weight:400}
+.serif{font-family:'Playfair'}
+p{margin:0;line-height:1.72}
+.lead{font-size:12.5px;color:#3f3d38;line-height:1.85;font-weight:300}
+.small{font-size:9.5px;letter-spacing:.02em;color:var(--muted)}
+.rule{height:1px;background:var(--line);border:0}
+.rule.d{background:var(--lined)}
+.gold{color:var(--ink)}
+.up{text-transform:uppercase;letter-spacing:.18em}
+
+/* ---- footer ---- */
+.foot{position:absolute;left:0.85in;right:0.85in;bottom:0.5in;display:flex;justify-content:space-between;align-items:center;
+  font-family:'Jost';font-weight:400;font-size:8px;letter-spacing:.22em;text-transform:uppercase;color:var(--muted2)}
+.dark .foot{color:rgba(246,243,236,.5)}
+.foot .footlogo{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);height:12px;width:auto;object-fit:contain;opacity:.82}
+
+/* ---- image helpers ---- */
+.bleed{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.scrim{position:absolute;inset:0}
+
+/* ---- stat row ---- */
+.stats{display:flex;border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+.stat{flex:1;padding:16px 6px;text-align:center;border-right:1px solid var(--line)}
+.stat:last-child{border-right:0}
+.stat .n{font-family:'Playfair';font-weight:700;font-size:24px;color:var(--ink);line-height:1}
+.stat .n .u{font-size:12px;color:var(--ink);vertical-align:super;margin-left:1px}
+.stat .l{font-size:7.5px;letter-spacing:.2em;text-transform:uppercase;color:var(--muted);margin-top:8px}
+
+/* ---- fleet cards ---- */
+.fleet-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.fcard{border:1px solid var(--line);background:#fff;overflow:hidden;display:flex;flex-direction:column}
+.fcard .ph{height:118px;position:relative;overflow:hidden}
+.fcard .ph img{width:100%;height:100%;object-fit:cover}
+.fcard .ph .cap-seats{position:absolute;top:8px;right:8px;background:rgba(12,12,13,.82);color:var(--ivory);font-size:8px;letter-spacing:.16em;text-transform:uppercase;padding:4px 8px}
+.fcard .body{padding:12px 14px 14px}
+.fcard h3{font-size:15px;line-height:1.12}
+.fcard .models{font-size:8.5px;letter-spacing:.13em;text-transform:uppercase;color:var(--ink);margin:5px 0 7px;display:flex;align-items:center;gap:8px}
+.fcard .bemblems{display:flex;align-items:center;gap:6px;flex:0 0 auto;padding-right:8px;border-right:1px solid var(--line)}
+.fcard .bemb{height:15px;width:auto;max-width:26px;object-fit:contain;display:block}
+.fcard .bemb.tall{height:17px}
+.fcard .desc{font-size:9.7px;color:var(--muted);line-height:1.55;font-weight:300}
+
+/* ---- list rows ---- */
+.qa{display:grid;grid-template-columns:1fr 1fr;gap:26px 34px}
+.qa .item .q{font-family:'Jost';font-weight:600;font-size:9px;letter-spacing:.2em;text-transform:uppercase;color:var(--ink);margin-bottom:7px;display:flex;gap:9px;align-items:baseline}
+.qa .item .q .num{font-family:'Playfair';font-style:italic;font-weight:400;font-size:14px;color:var(--ink)}
+.qa .item .a{font-size:10.7px;line-height:1.62;color:#3f3d38;font-weight:300}
+
+/* service columns */
+.svc{display:grid;grid-template-columns:1fr 1fr;gap:20px 30px}
+.svc .col .hd{display:flex;align-items:center;gap:11px;padding-bottom:9px;border-bottom:1px solid var(--line);margin-bottom:11px}
+.svc .col .hd h3{font-size:13.5px}
+.svc .col .hd .ic{width:26px;height:26px;flex:0 0 auto}
+.svc .col ul{margin:0;padding:0;list-style:none}
+.svc .col li{font-size:9.8px;color:#43413b;font-weight:300;padding:3.5px 0 3.5px 15px;position:relative;line-height:1.4}
+.svc .col li::before{content:"";position:absolute;left:0;top:9px;width:5px;height:5px;border:1px solid var(--gold);transform:rotate(45deg)}
+
+/* ops steps */
+.ops{display:grid;grid-template-columns:1fr 1fr;gap:16px 30px}
+.op{display:flex;gap:14px}
+.op .no{font-family:'Playfair';font-weight:700;font-size:22px;color:var(--ivory);line-height:1;flex:0 0 auto;width:34px}
+.dark .op .no{color:var(--ivory)}
+.op .tx h3{font-size:12px;letter-spacing:.02em;margin-bottom:4px}
+.op .tx p{font-size:9.5px;line-height:1.55;font-weight:300}
+.dark .op .tx p{color:rgba(246,243,236,.72)}
+
+/* coverage */
+.cov-cols{display:grid;grid-template-columns:1.15fr 1fr;gap:34px}
+.tag{display:inline-block;font-family:'Jost';font-weight:400;font-size:9px;letter-spacing:.12em;text-transform:uppercase;color:#43413b;border:1px solid var(--line);padding:6px 10px;margin:0 6px 8px 0}
+.tag .c{color:var(--ink);font-weight:600;margin-right:5px}
+.miniband{height:1px;background:linear-gradient(90deg,transparent,var(--gold),transparent);margin:2px 0 0}
+
+/* rate table */
+.rate{width:100%;border-collapse:collapse}
+.rate th{font-family:'Jost';font-weight:600;font-size:8px;letter-spacing:.2em;text-transform:uppercase;color:var(--muted);text-align:left;padding:0 0 11px;border-bottom:1px solid var(--ink)}
+.rate th.r,.rate td.r{text-align:right}
+.rate td{padding:10.5px 0;border-bottom:1px solid var(--line);font-size:11px;color:#2f2d29;font-weight:300}
+.rate td .from{font-family:'Jost';font-weight:500;color:var(--ink)}
+.rate td .to{color:var(--muted)}
+.rate td.r{font-family:'Playfair';font-weight:500;font-style:italic;color:var(--ink);font-size:11px;letter-spacing:.04em}
+
+/* COI specimen */
+.coi{position:relative;border:1.5px solid var(--ink);background:#fff;font-family:'Jost';color:#1a1a1a}
+.coi .wm{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;pointer-events:none;overflow:hidden}
+.coi .wm span{font-family:'Jost';font-weight:600;font-size:66px;letter-spacing:.3em;color:rgba(190,150,72,.13);transform:rotate(-18deg);white-space:nowrap}
+.coi .top{display:flex;justify-content:space-between;align-items:flex-start;padding:11px 14px;border-bottom:1.5px solid var(--ink)}
+.coi .top .t{font-family:'Jost';font-weight:600;font-size:12px;letter-spacing:.06em;text-transform:uppercase}
+.coi .top .t small{display:block;font-weight:300;font-size:7px;letter-spacing:.12em;color:#666;margin-top:3px}
+.coi .top .d{font-size:7.5px;color:#555;text-align:right;line-height:1.5}
+.coi .grid2{display:grid;grid-template-columns:1fr 1fr}
+.coi .cell{padding:9px 14px;border-bottom:1px solid #cfcfcf}
+.coi .cell.br{border-right:1px solid #cfcfcf}
+.coi .lab{font-size:6.5px;letter-spacing:.16em;text-transform:uppercase;color:#8a8a8a;margin-bottom:4px}
+.coi .val{font-size:9px;line-height:1.4;color:#1a1a1a}
+.coi .val b{font-weight:600}
+.coi table{width:100%;border-collapse:collapse}
+.coi table th{font-size:6.5px;letter-spacing:.12em;text-transform:uppercase;color:#8a8a8a;text-align:left;padding:7px 14px;border-bottom:1px solid #cfcfcf;background:#faf8f3}
+.coi table td{font-size:8.3px;padding:6px 14px;border-bottom:1px solid #e6e6e6;color:#222}
+.coi table td.lim{text-align:right;font-family:'Playfair';font-weight:500}
+.coi .note{padding:9px 14px;font-size:7px;letter-spacing:.06em;color:#7a7a7a;line-height:1.5;background:#faf8f3}
+
+/* contact block */
+.contact{display:grid;grid-template-columns:1fr 1fr;gap:12px 40px}
+.contact .b .l{font-size:8px;letter-spacing:.24em;text-transform:uppercase;color:var(--ivory);margin-bottom:6px}
+.contact .b .v{font-size:12px;color:var(--ivory);font-weight:300;letter-spacing:.02em}
+.contact .b .v.big{font-family:'Playfair';font-weight:700;font-size:19px}
+
+.pin{position:absolute}
+
+/* ============ LUXURY ICON SYSTEM (hairline glyphs in fine medallions) ============ */
+.mi{display:inline-flex;align-items:center;justify-content:center;width:30px;height:30px;border-radius:50%;border:1px solid rgba(12,12,13,.22);color:var(--ink);flex:0 0 auto}
+.mi svg,.ii{fill:none;stroke:currentColor;stroke-width:1.15;stroke-linecap:round;stroke-linejoin:round}
+.mi svg{width:15px;height:15px}
+.dark .mi,.mi.inv{border-color:rgba(246,243,236,.32);color:var(--ivory)}
+.mi.lg{width:42px;height:42px}.mi.lg svg{width:19px;height:19px}
+.mi.sm{width:22px;height:22px}.mi.sm svg{width:10.5px;height:10.5px}
+.mi.blk{display:flex;margin-bottom:12px}
+.mi.ctr{display:flex;margin:0 auto 12px}
+.ii{display:inline-block;width:10px;height:10px;vertical-align:-1.5px;margin-right:7px}
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs><symbol id="i-home" viewBox="0 0 24 24"><path d="M4 11l8-6.5 8 6.5M6 9.5V20h12V9.5"/><path d="M12 17.2s-2.7-1.7-2.7-3.4a1.35 1.35 0 0 1 2.7-.45 1.35 1.35 0 0 1 2.7.45c0 1.7-2.7 3.4-2.7 3.4z"/></symbol><symbol id="i-shield" viewBox="0 0 24 24"><path d="M12 3l7 3v5c0 4.6-3 8.3-7 10-4-1.7-7-5.4-7-10V6z"/><path d="M9 12l2 2 4-4"/></symbol><symbol id="i-compass" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M15.5 8.5l-2.2 4.8-4.8 2.2 2.2-4.8z"/><path d="M12 3v1.6M12 19.4V21M3 12h1.6M19.4 12H21"/></symbol><symbol id="i-car" viewBox="0 0 24 24"><path d="M3 15.5V13l2.2-4h9.3l3.6 4H21v2.5"/><path d="M3 15.5h1.9M9.1 15.5h5.8M19.1 15.5H21M5.5 13h13"/><circle cx="7" cy="16" r="2"/><circle cx="17" cy="16" r="2"/></symbol><symbol id="i-gem" viewBox="0 0 24 24"><path d="M6.5 4h11l3.5 5-9 11L3 9z"/><path d="M3 9h18M9.5 4L8 9l4 11 4-11-1.5-5"/></symbol><symbol id="i-umbrella" viewBox="0 0 24 24"><path d="M3 12a9 9 0 0 1 18 0z"/><path d="M12 12v6.5a2 2 0 0 1-4 0M12 3v-.5"/></symbol><symbol id="i-sparkle" viewBox="0 0 24 24"><path d="M11 4l1.5 5 5 1.5-5 1.5-1.5 5-1.5-5-5-1.5 5-1.5z"/><path d="M18.5 15.5l.6 1.9 1.9.6-1.9.6-.6 1.9-.6-1.9-1.9-.6 1.9-.6z"/></symbol><symbol id="i-gauge" viewBox="0 0 24 24"><path d="M4 17a8 8 0 1 1 16 0"/><path d="M12 17l4.2-5.2"/><circle cx="12" cy="17" r="1.1"/><path d="M6.3 11.3l1 .8M12 8.6V10M17.7 11.3l-1 .8"/></symbol><symbol id="i-tie" viewBox="0 0 24 24"><path d="M8 4l4 3 4-3"/><path d="M12 7l-2 2 1.2 1.6L9.3 18.5 12 21l2.7-2.5-1.9-7.9L14 9z"/></symbol><symbol id="i-people" viewBox="0 0 24 24"><circle cx="9" cy="8" r="3.2"/><path d="M3 20c0-3.4 2.7-5.6 6-5.6s6 2.2 6 5.6"/><circle cx="17.2" cy="9" r="2.5"/><path d="M16.4 14.4c2.8.1 4.6 2 4.6 4.8"/></symbol><symbol id="i-seal" viewBox="0 0 24 24"><circle cx="12" cy="9.5" r="6"/><path d="M8.6 14.4L7.2 21l4.8-2.4 4.8 2.4-1.4-6.6"/><path d="M9.6 9.6l1.7 1.7 3.1-3.2"/></symbol><symbol id="i-bell" viewBox="0 0 24 24"><path d="M5.5 17.5a6.5 6.5 0 0 1 13 0z"/><path d="M3 20h18M12 11V9M10.4 8.6h3.2"/></symbol><symbol id="i-pin" viewBox="0 0 24 24"><path d="M12 21s-6.5-6-6.5-11a6.5 6.5 0 0 1 13 0c0 5-6.5 11-6.5 11z"/><circle cx="12" cy="10" r="2.3"/></symbol><symbol id="i-lock" viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="10" rx="1.5"/><path d="M8 11V8a4 4 0 0 1 8 0v3M12 15v2.2"/></symbol><symbol id="i-plane" viewBox="0 0 24 24"><path d="M12 2.5c.8 0 1.4.7 1.4 1.5V10l7.6 4.6v1.8l-7.6-2.3v4.6l2.1 1.6V22L12 21l-3.5 1v-1.7l2.1-1.6v-4.6L3 16.4v-1.8L10.6 10V4c0-.8.6-1.5 1.4-1.5z"/></symbol><symbol id="i-ship" viewBox="0 0 24 24"><path d="M3 15l2.2 4.5h13.6L21 15z"/><path d="M6 15v-4h12v4M9 11V7.5h6V11M12 7.5V4.5"/></symbol><symbol id="i-train" viewBox="0 0 24 24"><rect x="6" y="3" width="12" height="14" rx="3"/><path d="M6 10h12M8.5 17l-2 4M15.5 17l2 4"/><circle cx="9" cy="13.5" r=".6"/><circle cx="15" cy="13.5" r=".6"/></symbol><symbol id="i-briefcase" viewBox="0 0 24 24"><rect x="3" y="7.5" width="18" height="12" rx="1.5"/><path d="M8.5 7.5v-2A1.5 1.5 0 0 1 10 4h4a1.5 1.5 0 0 1 1.5 1.5v2M3 12.5h18M11 12.5V14h2v-1.5"/></symbol><symbol id="i-rings" viewBox="0 0 24 24"><circle cx="9" cy="14.5" r="5"/><circle cx="15" cy="14.5" r="5"/><path d="M13.6 4.5h2.8l1 1.3-2.4 2.4-2.4-2.4z"/></symbol><symbol id="i-star" viewBox="0 0 24 24"><path d="M12 3.5l2.5 5.3 5.8.7-4.3 4 1.1 5.7L12 16.4l-5.1 2.8 1.1-5.7-4.3-4 5.8-.7z"/></symbol><symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3.5 2"/></symbol><symbol id="i-doc" viewBox="0 0 24 24"><path d="M6 3h9l4 4v14H6z"/><path d="M15 3v4h4M9 11h7M9 14h7M9 17h4"/></symbol><symbol id="i-personcheck" viewBox="0 0 24 24"><circle cx="10" cy="8" r="3.5"/><path d="M3.5 20c0-3.6 2.9-6 6.5-6 1.3 0 2.5.3 3.5.8M15 17.5l2 2 4-4"/></symbol><symbol id="i-phone" viewBox="0 0 24 24"><path d="M6.6 3.5h2.6l1.6 4-2 1.3a11 11 0 0 0 6.4 6.4l1.3-2 4 1.6v2.6a2 2 0 0 1-2 2.1A15 15 0 0 1 4.5 6a2 2 0 0 1 2.1-2.5z"/></symbol><symbol id="i-mail" viewBox="0 0 24 24"><rect x="3" y="5.5" width="18" height="13" rx="1.5"/><path d="M3.5 6.5l8.5 6.5 8.5-6.5"/></symbol><symbol id="i-globe" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><ellipse cx="12" cy="12" rx="4" ry="9"/><path d="M3 12h18"/></symbol><symbol id="i-glass" viewBox="0 0 24 24"><path d="M7 4h10l-1 5a4 4 0 0 1-8 0z"/><path d="M12 13v7M8.5 20h7M7.4 7h9.2"/></symbol><symbol id="i-headset" viewBox="0 0 24 24"><path d="M4 14v-2a8 8 0 0 1 16 0v2"/><rect x="3" y="13" width="3.5" height="6" rx="1"/><rect x="17.5" y="13" width="3.5" height="6" rx="1"/><path d="M19.2 19c0 1.5-2 2.5-5 2.5"/></symbol></defs></svg>
+
+
+<!-- ============================================================ 1 · COVER ============================================================ -->
+<section class="page dark" style="overflow:hidden;background:#070707">
+  <img class="bleed" src="assets/cover_subway.jpg" alt="" style="height:74%;object-position:center 30%">
+  <div class="scrim" style="background:linear-gradient(180deg,rgba(7,7,7,.8) 0%,rgba(7,7,7,.3) 7%,rgba(7,7,7,0) 14%,rgba(7,7,7,0) 44%,rgba(7,7,7,.6) 55%,rgba(7,7,7,.95) 62%,#070707 66%)"></div>
+
+  <div class="pin" style="left:0;right:0;top:.42in;text-align:center;font-family:'Inter';font-weight:500;font-size:7.2px;letter-spacing:.42em;text-transform:uppercase;color:rgba(255,255,255,.88)">Family-Owned &nbsp;·&nbsp; North Haven, Connecticut &nbsp;·&nbsp; Est. 2007</div>
+
+  <div class="pin" style="left:.75in;right:.75in;top:6.95in;text-align:center;color:#fff">
+    <div style="display:flex;align-items:center;justify-content:center;gap:16px;font-family:'Inter';font-weight:500;font-size:7.4px;letter-spacing:.5em;text-transform:uppercase;color:rgba(255,255,255,.72)"><span style="width:38px;height:1px;background:rgba(255,255,255,.4)"></span>Prepared Exclusively For<span style="width:38px;height:1px;background:rgba(255,255,255,.4)"></span></div>
+    <div style="display:flex;align-items:center;justify-content:center;gap:26px;margin-top:22px">
+      <img src="../assets/absolute_logo.png" alt="Absolute Transportation" style="height:34px;width:auto">
+      <span style="width:1px;height:40px;background:rgba(255,255,255,.35)"></span>
+      <img src="assets/logo_subway_white.svg" alt="Subway" style="height:30px;width:auto">
+    </div>
+    <h1 style="font-family:'Cormorant';font-weight:300;font-size:28px;line-height:1;letter-spacing:.16em;text-transform:uppercase;margin-top:30px;padding-left:.16em">Executive Ground Transportation</h1>
+    <p style="font-family:'Cormorant';font-style:italic;font-weight:400;font-size:19px;line-height:1.45;letter-spacing:.01em;color:rgba(255,255,255,.8);margin-top:13px">A partnership proposal for your Shelton headquarters</p>
+  </div>
+
+  <div class="pin" style="left:.75in;right:.75in;top:9.2in;border-top:1px solid rgba(255,255,255,.18);display:grid;grid-template-columns:repeat(4,1fr);color:#fff">
+    <div style="padding:13px 10px 0 0"><div style="font-family:'Inter';font-weight:500;font-size:6.4px;letter-spacing:.34em;color:rgba(255,255,255,.5)">01</div><div style="font-family:'Cormorant';font-weight:300;font-size:15px;margin-top:5px">Your Needs</div><div style="font-family:'Cormorant';font-style:italic;font-size:10.5px;color:rgba(255,255,255,.6);margin-top:2px">Built around Subway</div></div>
+    <div style="padding:13px 10px 0 14px;border-left:1px solid rgba(255,255,255,.18)"><div style="font-family:'Inter';font-weight:500;font-size:6.4px;letter-spacing:.34em;color:rgba(255,255,255,.5)">02</div><div style="font-family:'Cormorant';font-weight:300;font-size:15px;margin-top:5px">The Fleet</div><div style="font-family:'Cormorant';font-style:italic;font-size:10.5px;color:rgba(255,255,255,.6);margin-top:2px">Every vehicle, a reflection of you</div></div>
+    <div style="padding:13px 10px 0 14px;border-left:1px solid rgba(255,255,255,.18)"><div style="font-family:'Inter';font-weight:500;font-size:6.4px;letter-spacing:.34em;color:rgba(255,255,255,.5)">03</div><div style="font-family:'Cormorant';font-weight:300;font-size:15px;margin-top:5px">The Chauffeurs</div><div style="font-family:'Cormorant';font-style:italic;font-size:10.5px;color:rgba(255,255,255,.6);margin-top:2px">Built, never simply found</div></div>
+    <div style="padding:13px 0 0 14px;border-left:1px solid rgba(255,255,255,.18)"><div style="font-family:'Inter';font-weight:500;font-size:6.4px;letter-spacing:.34em;color:rgba(255,255,255,.5)">04</div><div style="font-family:'Cormorant';font-weight:300;font-size:15px;margin-top:5px">The Partnership</div><div style="font-family:'Cormorant';font-style:italic;font-size:10.5px;color:rgba(255,255,255,.6);margin-top:2px">How working together feels</div></div>
+  </div>
+
+  <div class="pin" style="left:.75in;right:.75in;top:10.1in;text-align:center;font-family:'Inter';font-weight:300;font-size:7.6px;letter-spacing:.14em;text-transform:uppercase;color:rgba(255,255,255,.55)">For Executive Leadership &nbsp;·&nbsp; Corporate Travel &nbsp;·&nbsp; Events &nbsp;·&nbsp; Talent Teams</div>
+
+  <div class="pin" style="left:.75in;right:.75in;bottom:.42in;display:flex;justify-content:space-between;font-family:'Inter';font-weight:500;font-size:6.6px;letter-spacing:.36em;text-transform:uppercase;color:rgba(255,255,255,.5)"><span>Absolute Transportation, LLC</span><span>Volume 01 &nbsp;·&nbsp; 2027</span></div>
+</section>
+
+<!-- ============================================================ 2 · 60-SECOND SNAPSHOT ============================================================ -->
+<section class="page">
+  <div style="display:flex;height:100%">
+    <div style="width:2.55in;flex:0 0 auto;position:relative;overflow:hidden">
+      <img src="assets/strip.jpg" style="width:100%;height:100%;object-fit:cover" alt="">
+      <div class="scrim" style="background:linear-gradient(90deg,rgba(12,12,13,.15),rgba(12,12,13,.55))"></div>
+      <div class="pin" style="left:24px;bottom:34px;right:18px">
+        <div style="font-family:'Playfair';font-style:italic;font-weight:400;font-size:16px;color:#fff;line-height:1.35">“Every traveler you send us is treated as though your name is in the back seat.”</div>
+      </div>
+    </div>
+
+    <div style="flex:1;padding:0.9in 0.7in 0.7in 0.62in;display:flex;flex-direction:column">
+      <div class="kick">The Sixty-Second Read</div>
+      <h1 class="display" style="font-size:30px;margin-top:16px;line-height:1.08">Everything Subway needs<br>to know — before the<br>first ride.</h1>
+      <p class="lead" style="margin-top:14px;font-size:11px;max-width:none">Think of this page as our resume, not a brochure. Six honest answers to the six questions a company asks before it trusts someone with its people.</p>
+
+      <div style="margin-top:22px;flex:1">
+        <div class="qa" style="gap:19px 26px">
+          <div class="item"><span class="mi blk"><svg><use href="#i-home"/></svg></span><div class="q"><span class="num">01</span>Who we are</div><div class="a">A family-owned luxury ground-transportation company based in North Haven, CT, chauffeuring guests across the Northeast since 2007.</div></div>
+          <div class="item"><span class="mi blk"><svg><use href="#i-shield"/></svg></span><div class="q"><span class="num">02</span>Why you can trust us</div><div class="a">Licensed by Connecticut and federally (U.S. DOT 1567094), fully insured, and reachable 24 hours a day, 365 days a year. The owners answer the phone.</div></div>
+          <div class="item"><span class="mi blk"><svg><use href="#i-compass"/></svg></span><div class="q"><span class="num">03</span>Where we go</div><div class="a">From 1 Corporate Drive in Shelton to Bradley, Tweed New Haven, Westchester, LaGuardia, JFK and Newark — plus Manhattan, Boston and every state that borders Connecticut.</div></div>
+          <div class="item"><span class="mi blk"><svg><use href="#i-car"/></svg></span><div class="q"><span class="num">04</span>What we drive</div><div class="a">One immaculate, uniformly black fleet: executive crossovers, full-size SUVs, Sprinters for teams of up to 14, stretch limousines, and an all-electric option.</div></div>
+          <div class="item"><span class="mi blk"><svg><use href="#i-gem"/></svg></span><div class="q"><span class="num">05</span>What makes us different</div><div class="a">We don't hand your people a car. We hand them an arrival that reflects the standard Subway has already set.</div></div>
+          <div class="item"><span class="mi blk"><svg><use href="#i-umbrella"/></svg></span><div class="q"><span class="num">06</span>Why it lowers your risk</div><div class="a">When a flight slips at 4 a.m. or a meeting runs long, you want a partner who already has the answer. That is the entire job.</div></div>
+        </div>
+      </div>
+
+      <div class="stats" style="margin-top:8px">
+        <div class="stat"><div class="n">2007</div><div class="l">Family Owned</div></div>
+        <div class="stat"><div class="n">24<span class="u">/7</span></div><div class="l">365 Days</div></div>
+        <div class="stat"><div class="n">9</div><div class="l">Airports</div></div>
+        <div class="stat"><div class="n">10<span class="u">+</span></div><div class="l">States Served</div></div>
+        <div class="stat"><div class="n">CT</div><div class="l">Livery Licensed</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================ 3 · THE REFRAME ============================================================ -->
+<section class="page dark">
+  <img class="bleed" src="assets/reframe_subway.jpg" alt="">
+  <div class="scrim" style="background:linear-gradient(180deg,rgba(8,8,9,.55),rgba(8,8,9,.34) 45%,rgba(8,8,9,.9))"></div>
+  <div class="scrim" style="background:linear-gradient(90deg,rgba(8,8,9,.85) 6%,rgba(8,8,9,.15) 60%)"></div>
+
+  <div class="pad" style="position:relative;height:100%;display:flex;flex-direction:column;justify-content:center">
+    <div class="kick" style="color:var(--ivory)">The Difference That Matters</div>
+    <h1 class="display" style="font-size:40px;color:#fff;margin-top:22px;line-height:1.08;max-width:6.1in">
+      When your people ride with us,<br>they're not just being driven.<br><span style="font-style:italic;font-weight:400;color:var(--ivory)">They're carrying your name.</span>
+    </h1>
+    <div style="width:52px;height:1px;background:var(--gold);margin:30px 0 24px"></div>
+    <p style="max-width:4.7in;font-size:12px;line-height:1.95;color:rgba(246,243,236,.9);font-weight:300">
+      An executive's first hour of a travel day, and a visiting guest's first impression of Subway, both happen in the back of a car — the chauffeur who greets them, the condition of the vehicle, whether it arrives early or arrives at all.
+    </p>
+    <p style="max-width:4.7in;font-size:12px;line-height:1.95;color:rgba(246,243,236,.9);font-weight:300;margin-top:16px">
+      That moment reflects on you long before it reflects on us. So we treat every traveler you send as if your reputation is riding in the back seat — <span style="color:#fff;font-style:italic;font-family:'Playfair'">because it is.</span>
+    </p>
+    <p style="margin-top:26px;font-family:'Playfair';font-weight:500;font-size:14px;color:var(--ivory);letter-spacing:.01em">That is the line between a vendor and a partner.</p>
+  </div>
+  <div class="foot"><span>Prepared for Subway</span><img class="footlogo" src="../assets/absolute_logo.png" alt="Absolute Transportation"><span style="color:var(--ivory)">02</span></div>
+</section>
+
+<!-- ============================================================ 8 · SERVICES BY PARTNER ============================================================ -->
+<section class="page">
+  <div class="pad" style="height:100%;display:flex;flex-direction:column">
+    <div style="display:flex;justify-content:space-between;align-items:center"><div class="kick">Built Around Subway</div><img src="assets/logo_subway.svg" alt="Subway" style="height:22px;width:auto"></div>
+    <h1 class="display" style="font-size:33px;margin-top:15px;line-height:1.04">Whatever Subway plans,<br>we're the ground under it.</h1>
+    <p class="lead" style="margin-top:13px;max-width:5.6in;font-size:11px">Subway runs from two headquarters — Shelton and Miami — and serves franchisees around the world. That means a steady rhythm of flights, visitors and events. Our home base in North Haven is a short drive from your Shelton campus. Here is exactly where we fit.</p>
+
+    <div class="svc" style="margin-top:24px;gap:46px 30px">
+      <div class="col">
+        <div class="hd">
+          <span class="mi "><svg><use href="#i-briefcase"/></svg></span>
+          <h3>Leadership &amp; Executive Travel</h3>
+        </div>
+        <ul><li>Airport transfers to BDL, HVN, HPN, LGA &amp; JFK</li><li>Shelton ↔ Miami travel days, door to gate</li><li>Meetings in Manhattan, Boston and beyond</li><li>Hourly, as-directed service for multi-stop days</li></ul>
+      </div>
+      <div class="col">
+        <div class="hd">
+          <span class="mi "><svg><use href="#i-plane"/></svg></span>
+          <h3>Corporate Travel &amp; Executive Assistants</h3>
+        </div>
+        <ul><li>One number and one email for every booking</li><li>Flight tracking with automatic adjustments</li><li>Written confirmation of every trip</li><li>A single, itemized corporate account</li></ul>
+      </div>
+      <div class="col">
+        <div class="hd">
+          <span class="mi "><svg><use href="#i-bell"/></svg></span>
+          <h3>Franchisees, Partners &amp; Guests</h3>
+        </div>
+        <ul><li>Meet &amp; greet for visiting franchisees and partners</li><li>Airport arrivals to the Shelton headquarters</li><li>Candidate and new-hire travel that sells the role</li><li>Hotel, campus and dinner transfers</li></ul>
+      </div>
+      <div class="col">
+        <div class="hd">
+          <span class="mi "><svg><use href="#i-people"/></svg></span>
+          <h3>Events &amp; Team Travel</h3>
+        </div>
+        <ul><li>Sprinters for teams of up to 14</li><li>Leadership meetings, trainings and off-sites</li><li>Timed, multi-vehicle event shuttles</li><li>Celebrations and team outings</li></ul>
+      </div>
+    </div>
+
+    <div style="margin-top:38px;background:var(--ink);color:var(--ivory);padding:18px 22px;display:flex;align-items:center;gap:26px">
+      <div style="flex:0 0 auto">
+        <span class="mi lg inv"><svg><use href="#i-star"/></svg></span>
+      </div>
+      <div style="flex:1">
+        <div class="kick plain" style="color:var(--ivory);font-size:8.5px">And For The Moments That Deserve More</div>
+        <p style="font-size:9.7px;color:rgba(246,243,236,.82);margin-top:6px;line-height:1.55;font-weight:300">Milestone celebrations · retirement send-offs · client entertainment · sporting events · a stretch limousine when the night calls for one. Whatever the occasion, the standard never changes.</p>
+      </div>
+    </div>
+
+    <div style="margin-top:36px;border-top:1px solid var(--line);padding-top:26px;display:grid;grid-template-columns:1fr 1.35fr;gap:40px;align-items:center">
+      <div class="kick plain" style="color:var(--ink);font-size:9px;line-height:1.6">You're Not Really<br>Booking a Ride</div>
+      <p style="font-family:'Playfair';font-weight:400;font-style:italic;font-size:14.5px;color:var(--ink);line-height:1.55">Subway isn't buying transportation — it's buying how its people and its guests feel at the start and end of a trip. <span style="font-style:normal;font-weight:500">So are we.</span> Choose Absolute and you're not simply arranging a car; you're protecting the time of the people who lead your company, and the impression you make on everyone who visits it.</p>
+    </div>
+  </div>
+  <div class="foot"><span>Prepared for Subway</span><img class="footlogo" src="../assets/absolute_logo.png" alt="Absolute Transportation"><span class="gold">03</span></div>
+</section>
+
+<!-- ============================================================ 4 · WHO WE ARE ============================================================ -->
+<section class="page">
+  <div class="pad" style="height:100%;display:flex;flex-direction:column">
+    <div class="kick">Who Stands Behind Every Ride</div>
+    <h1 class="display" style="font-size:34px;margin-top:16px;line-height:1.05">Family-owned.<br>Personally accountable.</h1>
+
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:34px;margin-top:26px;align-items:start">
+      <div>
+        <p class="lead">Absolute Transportation was transformed by <b style="font-weight:500;color:var(--ink)">Manmohan Komal</b> — and it is still run by the same family today. That matters more than it sounds.</p>
+        <p class="lead" style="margin-top:14px">When you call, you reach the people whose name is on the door — people who know your account and can say yes on the spot. Every trip carries our family's name, so every traveler you send receives our full and personal attention.</p>
+        <p class="lead" style="margin-top:14px">From our home in North Haven, we serve clients locally, regionally, and nationally — private chauffeured travel, ground and air transfers, and special-needs transportation — each arranged with precision and genuine care.</p>
+      </div>
+      <div style="position:relative;height:3.35in;overflow:hidden;border:1px solid var(--line)">
+        <img src="assets/family.jpg" style="width:100%;height:100%;object-fit:cover" alt="">
+      </div>
+    </div>
+
+    <div class="rule" style="margin:30px 0 22px"></div>
+
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:26px">
+      <div>
+        <div class="kick plain" style="color:var(--ink)">Our Standard</div>
+        <p style="font-size:10px;color:var(--muted);line-height:1.65;margin-top:10px;font-weight:300">Immaculate vehicles, professional chauffeurs, and a ride that feels calm from curb to curb. Nothing left to chance.</p>
+      </div>
+      <div>
+        <div class="kick plain" style="color:var(--ink)">Our Promise</div>
+        <p style="font-size:10px;color:var(--muted);line-height:1.65;margin-top:10px;font-weight:300">Reliable, safe, and on time — because every pickup is a promise we've made to you, and keeping it is how trust is earned.</p>
+      </div>
+      <div>
+        <div class="kick plain" style="color:var(--ink)">Our Reach</div>
+        <p style="font-size:10px;color:var(--muted);line-height:1.65;margin-top:10px;font-weight:300">One dependable partner for the whole Northeast corridor — so everyone you send is in familiar, trusted hands.</p>
+      </div>
+    </div>
+
+    <p style="margin-top:30px;font-family:'Playfair';font-style:italic;font-weight:400;font-size:15px;color:var(--ink);line-height:1.5;max-width:5.6in">
+      “We build lasting relationships — with the people we drive, and with the companies who trust us to represent them.”
+    </p>
+
+    <div style="margin-top:22px;border-top:1px solid var(--line);padding-top:18px;display:grid;grid-template-columns:1.15fr 1fr;gap:38px;align-items:start">
+      <div>
+        <div class="kick plain" style="color:var(--ink)">What Family-Owned Means For You</div>
+        <p style="font-size:10.3px;color:#43413b;line-height:1.85;font-weight:300;margin-top:12px">To us, every trip is personal: a traveler we're welcoming and a company whose reputation we're carrying. That's why the same people who own the company answer the phone, dispatch the cars, and follow up after the ride. When plans change at the last minute, you reach someone who already knows the details, can make the decision immediately, and cares about getting it right — for your traveler and for you.</p>
+      </div>
+      <div>
+        <div class="kick plain" style="color:var(--ink)">We Treat Your Trust As Borrowed</div>
+        <p style="font-size:10.3px;color:#43413b;line-height:1.85;font-weight:300;margin-top:12px">Subway has spent decades earning the confidence of its guests, its franchisees and its people. We never take that for granted — arriving early, presenting immaculately, and handling the quiet courtesies that turn a simple transfer into a reason your traveler thanks you for arranging it.</p>
+      </div>
+    </div>
+  </div>
+  <div class="foot"><span>Prepared for Subway</span><img class="footlogo" src="../assets/absolute_logo.png" alt="Absolute Transportation"><span class="gold">04</span></div>
+</section>
+
+<!-- ============================================================ 5 · THE FLEET ============================================================ -->
+<section class="page">
+  <div class="pad" style="height:100%;display:flex;flex-direction:column">
+    <div style="display:flex;justify-content:space-between;align-items:flex-end">
+      <div>
+        <div class="kick">The Fleet</div>
+        <h1 class="display" style="font-size:32px;margin-top:14px;line-height:1.02">Every vehicle,<br>a reflection of you.</h1>
+      </div>
+      <p style="max-width:2.5in;font-size:9.5px;color:var(--muted);line-height:1.6;font-weight:300;text-align:right">Each one is detailed before it reaches your people — because when you put someone in our car, you're trusting how it looks, too.</p>
+    </div>
+
+    <div class="fleet-grid" style="margin-top:24px">
+      <div class="fcard">
+        <div class="ph"><img src="assets/veh_aviator.jpg" alt=""><span class="cap-seats">Up to 4 Guests</span></div>
+        <div class="body"><h3>Executive Sedan &amp; Crossover</h3><div class="models"><span class="bemblems"><img class="bemb tall" src="../assets/brands/emblem_lincoln.png" alt="Lincoln"></span>Lincoln Aviator · Lincoln MKT</div><div class="desc">The quiet standard for airport runs, executive travel, and the traveler who values arriving composed.</div></div>
+      </div>
+      <div class="fcard">
+        <div class="ph"><img src="assets/veh_escalade.jpg" alt=""><span class="cap-seats">Up to 6 Guests</span></div>
+        <div class="body"><h3>Luxury Full-Size SUV</h3><div class="models"><span class="bemblems"><img class="bemb" src="../assets/brands/emblem_cadillac.png" alt="Cadillac"><img class="bemb" src="../assets/brands/emblem_chevrolet.png" alt="Chevrolet"><img class="bemb" src="../assets/brands/emblem_ford.png" alt="Ford"></span>Cadillac Escalade · Suburban · Expedition</div><div class="desc">Presence and space for executives and their luggage — the natural choice for a seamless airport transfer.</div></div>
+      </div>
+      <div class="fcard">
+        <div class="ph"><img src="assets/veh_sprinter.jpg" alt=""><span class="cap-seats">Up to 14 Guests</span></div>
+        <div class="body"><h3>Executive Sprinter &amp; Transit</h3><div class="models"><span class="bemblems"><img class="bemb" src="../assets/brands/emblem_mercedes-benz.png" alt="Mercedes-Benz"><img class="bemb" src="../assets/brands/emblem_ford.png" alt="Ford"></span>Mercedes-Benz Sprinter · Ford Transit</div><div class="desc">Move a leadership team, a project group, or visiting guests together — in diamond-stitched comfort, so the group arrives together and refreshed.</div></div>
+      </div>
+      <div class="fcard">
+        <div class="ph"><img src="assets/veh_stretch.jpg" alt=""><span class="cap-seats">Up to 8 Guests</span></div>
+        <div class="body"><h3>Super-Stretch Limousine</h3><div class="models"><span class="bemblems"><img class="bemb tall" src="../assets/brands/emblem_lincoln.png" alt="Lincoln"></span>Lincoln Super-Stretch</div><div class="desc">Fiber-optic lighting, surround sound, and a chilled wet bar. For milestones and celebrations, the evening begins at the curb.</div></div>
+      </div>
+    </div>
+
+    <div style="display:flex;gap:16px;margin-top:16px">
+      <div class="fcard" style="flex:1;flex-direction:row">
+        <div class="ph" style="width:1.7in;height:auto"><img src="assets/veh_mache.jpg" alt=""><span class="cap-seats">Up to 3 Guests</span></div>
+        <div class="body" style="display:flex;flex-direction:column;justify-content:center"><h3>All-Electric Option</h3><div class="models"><span class="bemblems"><img class="bemb" src="../assets/brands/emblem_ford.png" alt="Ford"></span>Ford Mustang Mach-E</div><div class="desc">A sustainable choice for the traveler who asks — the same standard of care, a lighter footprint.</div></div>
+      </div>
+      <div style="flex:0 0 2.4in;border:1px solid var(--ink);background:var(--ink);color:var(--ivory);padding:16px 18px;display:flex;flex-direction:column;justify-content:center">
+        <div class="kick plain" style="color:var(--ivory);font-size:8.5px">One Fleet, One Standard</div>
+        <p style="font-size:9.5px;line-height:1.6;color:rgba(246,243,236,.82);font-weight:300;margin-top:9px">Need to match the vehicle to the occasion? Tell us the traveler, the moment, and the party size — we'll recommend the right car every time.</p>
+      </div>
+    </div>
+
+    <div style="margin-top:20px;border-top:1px solid var(--line);padding-top:16px">
+      <div class="kick plain" style="color:var(--ink);margin-bottom:12px">The Standard Behind Every Vehicle</div>
+      <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:26px">
+        <div><span class="mi sm blk" style="margin-bottom:8px"><svg><use href="#i-sparkle"/></svg></span><div style="font-family:'Playfair';font-weight:700;font-size:12px;color:var(--ink)">Detailed before dispatch</div><p style="font-size:9.3px;color:var(--muted);line-height:1.6;margin-top:7px;font-weight:300">Every interior is cleaned and inspected before it reaches your traveler — a spotless cabin, every single time.</p></div>
+        <div><span class="mi sm blk" style="margin-bottom:8px"><svg><use href="#i-gauge"/></svg></span><div style="font-family:'Playfair';font-weight:700;font-size:12px;color:var(--ink)">Maintained &amp; road-ready</div><p style="font-size:9.3px;color:var(--muted);line-height:1.6;margin-top:7px;font-weight:300">Routine service and safety checks keep the whole fleet reliable. Dependability is a schedule, not a hope.</p></div>
+        <div><span class="mi sm blk" style="margin-bottom:8px"><svg><use href="#i-tie"/></svg></span><div style="font-family:'Playfair';font-weight:700;font-size:12px;color:var(--ink)">One uniform presentation</div><p style="font-size:9.3px;color:var(--muted);line-height:1.6;margin-top:7px;font-weight:300">All black, professionally kept, never mismatched — a fleet that reinforces your brand instead of competing with it.</p></div>
+        <div><span class="mi sm blk" style="margin-bottom:8px"><svg><use href="#i-people"/></svg></span><div style="font-family:'Playfair';font-weight:700;font-size:12px;color:var(--ink)">Right-sized to the moment</div><p style="font-size:9.3px;color:var(--muted);line-height:1.6;margin-top:7px;font-weight:300">From a solo executive to a 14-guest group or an 8-passenger celebration, the fleet flexes to the trip.</p></div>
+      </div>
+    </div>
+  </div>
+  <div class="foot"><span>Prepared for Subway</span><img class="footlogo" src="../assets/absolute_logo.png" alt="Absolute Transportation"><span class="gold">05</span></div>
+</section>
+
+<!-- ============================================================ 6 · INTERIORS ============================================================ -->
+<section class="page dark">
+  <div style="display:grid;grid-template-rows:1.35fr 1fr;height:100%">
+    <div style="position:relative;overflow:hidden">
+      <img src="assets/interior_a.jpg" style="width:100%;height:100%;object-fit:cover" alt="">
+      <div class="scrim" style="background:linear-gradient(180deg,rgba(8,8,9,.93),rgba(8,8,9,.74) 22%,rgba(8,8,9,.12) 47%,rgba(8,8,9,.34))"></div>
+      <div class="pin" style="left:0.85in;top:0.8in;right:0.85in">
+        <div class="kick" style="color:var(--ivory)">Inside the Experience</div>
+        <h1 class="display" style="font-size:34px;color:#fff;margin-top:16px;line-height:1.04;max-width:5in">The details your<br>people remember.</h1>
+      </div>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;background:var(--ink)">
+      <div style="position:relative;overflow:hidden;border-right:1px solid var(--lined)">
+        <img src="assets/interior_b.jpg" style="width:100%;height:100%;object-fit:cover;opacity:.92" alt="">
+      </div>
+      <div style="padding:0.5in 0.55in;display:flex;flex-direction:column;justify-content:center">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px 22px">
+          <div><div style="font-family:'Playfair';font-weight:700;font-size:14px;color:var(--ivory)">Starlight ceilings</div><p style="font-size:9px;color:rgba(246,243,236,.66);margin-top:5px;line-height:1.5;font-weight:300">Fiber-optic lighting that turns a transfer into a moment.</p></div>
+          <div><div style="font-family:'Playfair';font-weight:700;font-size:14px;color:var(--ivory)">Chilled wet bar</div><p style="font-size:9px;color:rgba(246,243,236,.66);margin-top:5px;line-height:1.5;font-weight:300">Stemware ready for the toast your team didn't expect.</p></div>
+          <div><div style="font-family:'Playfair';font-weight:700;font-size:14px;color:var(--ivory)">Hand-detailed leather</div><p style="font-size:9px;color:rgba(246,243,236,.66);margin-top:5px;line-height:1.5;font-weight:300">Cleaned, conditioned, and inspected before every reservation.</p></div>
+          <div><div style="font-family:'Playfair';font-weight:700;font-size:14px;color:var(--ivory)">Wood-trimmed cabins</div><p style="font-size:9px;color:rgba(246,243,236,.66);margin-top:5px;line-height:1.5;font-weight:300">Executive interiors that feel like a private lounge on wheels.</p></div>
+        </div>
+        <div class="rule d" style="margin:22px 0 16px"></div>
+        <p style="font-family:'Playfair';font-style:italic;font-weight:400;font-size:12.5px;color:rgba(246,243,236,.9);line-height:1.5">“Comfort is a detail. We just refuse to leave any of them to chance.”</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================ 6B · THE CHAUFFEURS ============================================================ -->
+<section class="page dark">
+  <img class="bleed" src="assets/chauffeur_subway.jpg" style="height:66%;object-position:center 84%" alt="">
+  <div class="scrim" style="background:linear-gradient(180deg,rgba(12,12,13,.90) 0%,rgba(12,12,13,.80) 20%,rgba(12,12,13,.34) 30%,rgba(12,12,13,.11) 40%,rgba(12,12,13,.30) 48%,rgba(12,12,13,.62) 54%,#0C0C0D 60%,#0C0C0D 100%)"></div>
+
+  <div class="pin" style="left:0.85in;top:0.8in;right:0.85in">
+    <div class="kick" style="color:#ffffff;text-shadow:0 1px 3px rgba(0,0,0,.95),0 0 9px rgba(0,0,0,.75)">The People We Trust With Your Name</div>
+    <h1 class="display" style="font-size:34px;color:#fff;margin-top:16px;line-height:1.08;max-width:6.2in;letter-spacing:.012em;text-shadow:0 2px 16px rgba(0,0,0,.85)">The car makes the first impression.<br>The chauffeur makes it last.</h1>
+  </div>
+
+  <div class="pin" style="left:0.85in;right:0.85in;bottom:0.62in">
+    <p style="font-size:12.5px;color:rgba(255,255,255,.98);font-weight:300;line-height:1.85;max-width:6.9in">Great chauffeurs aren't found. They're built — and we gladly do the unglamorous work it takes to build them. The vetting. The background checks. The commercial licensing. The training on the hundred small things a passenger only notices when they're missing — and the standards we refuse to lower even when lowering them would be easier and cheaper. Why go that hard? Because your name is on the line every single time you put someone in our car, and that means something to us. So ours show up early, dressed sharp, and unshakable when travel goes sideways — the kind of professional who makes the trip feel effortless and makes you look brilliant for choosing them. Do that enough times, and the trust you've spent years building doesn't just hold — it compounds.</p>
+    <div class="rule d" style="margin:24px 0 20px"></div>
+    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:30px">
+      <div><span class="mi blk"><svg><use href="#i-seal"/></svg></span><div style="font-family:'Playfair';font-weight:700;font-size:16px;color:var(--gold2)">Vetted &amp; Licensed</div><p style="font-size:11px;color:rgba(255,255,255,.85);margin-top:8px;line-height:1.65;font-weight:300">Background-checked and licensed to commercial livery standards — a known, trusted professional on every trip.</p></div>
+      <div><span class="mi blk"><svg><use href="#i-bell"/></svg></span><div style="font-family:'Playfair';font-weight:700;font-size:16px;color:var(--gold2)">Trained in Hospitality</div><p style="font-size:11px;color:rgba(255,255,255,.85);margin-top:8px;line-height:1.65;font-weight:300">Meet-and-greet, luggage, and the quiet courtesies that turn a transfer into a five-star arrival.</p></div>
+      <div><span class="mi blk"><svg><use href="#i-pin"/></svg></span><div style="font-family:'Playfair';font-weight:700;font-size:16px;color:var(--gold2)">Local Expertise</div><p style="font-size:11px;color:rgba(255,255,255,.85);margin-top:8px;line-height:1.65;font-weight:300">Airports, rail stations, and back-road shortcuts known by heart, so timing is never left to chance.</p></div>
+      <div><span class="mi blk"><svg><use href="#i-lock"/></svg></span><div style="font-family:'Playfair';font-weight:700;font-size:16px;color:var(--gold2)">Discreet &amp; Composed</div><p style="font-size:11px;color:rgba(255,255,255,.85);margin-top:8px;line-height:1.65;font-weight:300">Impeccably dressed, calm under pressure, and confidential. What happens in the car stays in the car.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================ 7 · COVERAGE ============================================================ -->
+<section class="page">
+  <div class="pad" style="height:100%;display:flex;flex-direction:column">
+    <div class="kick">Where We Take Your People</div>
+    <h1 class="display" style="font-size:33px;margin-top:15px;line-height:1.04">Connecticut-based.<br>Regionally relentless.</h1>
+    <p class="lead" style="margin-top:14px;max-width:5.4in;font-size:11px">We are proudly rooted in Connecticut — and, as our clients know, we don't stop at the state line. We serve the entire Northeast corridor and the bordering states beyond it, so you can send one executive or an entire team with a single, dependable partner.</p>
+
+    <div style="margin-top:24px">
+      <div style="margin-bottom:9px" class="kick plain gold" ><span class="mi sm"><svg><use href="#i-pin"/></svg></span>States We Serve</div>
+      <div style="margin-bottom:22px">
+        <span class="tag"><span class="c">CT</span>Connecticut</span><span class="tag"><span class="c">NY</span>New York</span><span class="tag"><span class="c">NJ</span>New Jersey</span><span class="tag"><span class="c">MA</span>Massachusetts</span><span class="tag"><span class="c">RI</span>Rhode Island</span><span class="tag"><span class="c">PA</span>Pennsylvania</span><span class="tag"><span class="c">VT</span>Vermont</span><span class="tag"><span class="c">NH</span>New Hampshire</span><span class="tag"><span class="c">DE</span>Delaware</span><span class="tag"><span class="c">DC</span>Washington</span>
+      </div>
+
+      <div class="cov-cols">
+        <div>
+          <div class="kick plain gold" style="margin-bottom:12px"><span class="mi sm"><svg><use href="#i-plane"/></svg></span>Airports · All Nine, Any Hour</div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:9px 18px">
+            <div class="apt"><span style="font-family:'Playfair';font-weight:700;color:var(--ink);font-size:12px;margin-right:8px">JFK</span><span style="font-size:9.5px;color:#43413b">John F. Kennedy Intl</span></div>
+            <div class="apt"><span style="font-family:'Playfair';font-weight:700;color:var(--ink);font-size:12px;margin-right:8px">LGA</span><span style="font-size:9.5px;color:#43413b">LaGuardia</span></div>
+            <div class="apt"><span style="font-family:'Playfair';font-weight:700;color:var(--ink);font-size:12px;margin-right:8px">EWR</span><span style="font-size:9.5px;color:#43413b">Newark Liberty</span></div>
+            <div class="apt"><span style="font-family:'Playfair';font-weight:700;color:var(--ink);font-size:12px;margin-right:8px">BOS</span><span style="font-size:9.5px;color:#43413b">Boston Logan</span></div>
+            <div class="apt"><span style="font-family:'Playfair';font-weight:700;color:var(--ink);font-size:12px;margin-right:8px">BDL</span><span style="font-size:9.5px;color:#43413b">Bradley Intl</span></div>
+            <div class="apt"><span style="font-family:'Playfair';font-weight:700;color:var(--ink);font-size:12px;margin-right:8px">HPN</span><span style="font-size:9.5px;color:#43413b">Westchester County</span></div>
+            <div class="apt"><span style="font-family:'Playfair';font-weight:700;color:var(--ink);font-size:12px;margin-right:8px">HVN</span><span style="font-size:9.5px;color:#43413b">Tweed New Haven</span></div>
+            <div class="apt"><span style="font-family:'Playfair';font-weight:700;color:var(--ink);font-size:12px;margin-right:8px">SWF</span><span style="font-size:9.5px;color:#43413b">Stewart Intl</span></div>
+            <div class="apt"><span style="font-family:'Playfair';font-weight:700;color:var(--ink);font-size:12px;margin-right:8px">BDR</span><span style="font-size:9.5px;color:#43413b">Sikorsky Memorial</span></div>
+          </div>
+        </div>
+        <div>
+          <div class="kick plain gold" style="margin-bottom:12px"><span class="mi sm"><svg><use href="#i-pin"/></svg></span>Closest To Your Shelton Campus</div>
+          <ul style="list-style:none;margin:0 0 20px;padding:0">
+            <li style="font-size:9.7px;color:#43413b;padding:4px 0 4px 15px;position:relative;font-weight:300"><span style="position:absolute;left:0;top:8px;width:5px;height:5px;border:1px solid var(--gold);transform:rotate(45deg)"></span>Tweed New Haven (HVN) &amp; Sikorsky (BDR)</li>
+            <li style="font-size:9.7px;color:#43413b;padding:4px 0 4px 15px;position:relative;font-weight:300"><span style="position:absolute;left:0;top:8px;width:5px;height:5px;border:1px solid var(--gold);transform:rotate(45deg)"></span>Bradley International (BDL) · Hartford</li>
+            <li style="font-size:9.7px;color:#43413b;padding:4px 0 4px 15px;position:relative;font-weight:300"><span style="position:absolute;left:0;top:8px;width:5px;height:5px;border:1px solid var(--gold);transform:rotate(45deg)"></span>Westchester County, LaGuardia &amp; JFK</li>
+            <li style="font-size:9.7px;color:#43413b;padding:4px 0 4px 15px;position:relative;font-weight:300"><span style="position:absolute;left:0;top:8px;width:5px;height:5px;border:1px solid var(--gold);transform:rotate(45deg)"></span>Bridgeport &amp; New Haven · Metro-North &amp; Amtrak</li>
+          </ul>
+          <div class="kick plain gold" style="margin-bottom:12px"><span class="mi sm"><svg><use href="#i-train"/></svg></span>Rail &amp; Interstate Hubs</div>
+          <ul style="list-style:none;margin:0;padding:0">
+            <li style="font-size:9.7px;color:#43413b;padding:4px 0 4px 15px;position:relative;font-weight:300"><span style="position:absolute;left:0;top:8px;width:5px;height:5px;border:1px solid var(--gold);transform:rotate(45deg)"></span>New Haven · Stamford · Bridgeport · Hartford</li>
+            <li style="font-size:9.7px;color:#43413b;padding:4px 0 4px 15px;position:relative;font-weight:300"><span style="position:absolute;left:0;top:8px;width:5px;height:5px;border:1px solid var(--gold);transform:rotate(45deg)"></span>New York Penn Station &amp; Grand Central</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div style="margin-top:40px;position:relative;height:2.35in;overflow:hidden">
+      <img src="assets/highway.jpg" style="width:100%;height:100%;object-fit:cover;object-position:center 42%" alt="">
+      <div style="position:absolute;inset:0;background:linear-gradient(180deg,rgba(8,8,9,.30),rgba(8,8,9,.68))"></div>
+      <div style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:0 24px">
+        <div style="font-family:'Playfair';font-weight:500;font-size:24px;color:#fff;letter-spacing:-.01em;text-shadow:0 2px 14px rgba(0,0,0,.5)">One partner. <span style="font-style:italic;color:var(--ivory)">The entire Northeast corridor.</span></div>
+        <div style="margin-top:11px;letter-spacing:.22em;text-transform:uppercase;font-size:8px;color:rgba(246,243,236,.85)">From your front door — to the gate, the boardroom, or the venue</div>
+      </div>
+    </div>
+    <p style="margin-top:22px;font-size:11.5px;color:#43413b;font-weight:300;line-height:1.65;text-align:center;max-width:6in;margin-left:auto;margin-right:auto">Don't see a destination? Ask. Long-distance and out-of-region transfers are part of what we do — one call handles it.</p>
+  </div>
+  <div class="foot"><span>Prepared for Subway</span><img class="footlogo" src="../assets/absolute_logo.png" alt="Absolute Transportation"><span class="gold">06</span></div>
+</section>
+
+
+
+<!-- ============================================================ 8B · THE EXPERIENCE (every itinerary) ============================================================ -->
+<section class="page">
+  <div class="pad" style="height:100%;display:flex;flex-direction:column">
+    <div class="kick">The Experience</div>
+    <h1 class="display" style="font-size:33px;margin-top:15px;line-height:1.04">Every itinerary.<br>Handled beautifully.</h1>
+    <p class="lead" style="margin-top:13px;max-width:5.6in;font-size:11px">From the first departure of the morning to the last arrival of the night, we deliver seamless, reliable, and elevated transportation for the travel days that matter most.</p>
+
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:24px 22px;margin-top:24px">
+      <figure style="margin:0"><div style="height:2.42in;overflow:hidden;border:1px solid var(--line)"><img src="assets/occ_airport.jpg" alt="" style="width:100%;height:100%;object-fit:cover;display:block"></div><figcaption style="margin-top:11px"><div style="font-family:'Playfair';font-weight:700;font-size:13px;color:var(--ink)">Airport transfers</div><p style="font-size:9.3px;color:var(--muted);line-height:1.6;margin-top:5px;font-weight:300">Door to gate with flights tracked in real time — on time, relaxed, and well taken care of.</p></figcaption></figure>
+      <figure style="margin:0"><div style="height:2.42in;overflow:hidden;border:1px solid var(--line)"><img src="assets/occ_greet.jpg" alt="" style="width:100%;height:100%;object-fit:cover;display:block"></div><figcaption style="margin-top:11px"><div style="font-family:'Playfair';font-weight:700;font-size:13px;color:var(--ink)">Meet &amp; greet</div><p style="font-size:9.3px;color:var(--muted);line-height:1.6;margin-top:5px;font-weight:300">A familiar, professional welcome at arrivals for visiting leaders, candidates and guests.</p></figcaption></figure>
+      <figure style="margin:0"><div style="height:2.42in;overflow:hidden;border:1px solid var(--line)"><img src="assets/occ_group.jpg" alt="" style="width:100%;height:100%;object-fit:cover;display:block"></div><figcaption style="margin-top:11px"><div style="font-family:'Playfair';font-weight:700;font-size:13px;color:var(--ink)">Team travel</div><p style="font-size:9.3px;color:var(--muted);line-height:1.6;margin-top:5px;font-weight:300">Off-sites, trainings and events — the whole group moving together, and arriving on time.</p></figcaption></figure>
+      <figure style="margin:0"><div style="height:2.42in;overflow:hidden;border:1px solid var(--line)"><img src="assets/occ_city.jpg" alt="" style="width:100%;height:100%;object-fit:cover;display:block"></div><figcaption style="margin-top:11px"><div style="font-family:'Playfair';font-weight:700;font-size:13px;color:var(--ink)">The city</div><p style="font-size:9.3px;color:var(--muted);line-height:1.6;margin-top:5px;font-weight:300">Manhattan meetings and multi-stop days, with a chauffeur who waits so your schedule never has to.</p></figcaption></figure>
+    </div>
+
+    <div style="margin-top:auto;background:var(--ink);color:var(--ivory);padding:18px 24px;display:flex;justify-content:space-between;align-items:center">
+      <div style="font-family:'Playfair';font-size:14px;line-height:1.4"><b style="font-weight:700">The destination matters.</b><br><span style="font-weight:400;color:rgba(246,243,236,.85)">So does every moment leading to it.</span></div>
+      <div style="font-size:8px;letter-spacing:.24em;text-transform:uppercase;color:rgba(246,243,236,.8);text-align:right;line-height:1.9">24/7 Reservations<br>(203) 938-0000</div>
+    </div>
+  </div>
+  <div class="foot"><span>Prepared for Subway</span><img class="footlogo" src="../assets/absolute_logo.png" alt="Absolute Transportation"><span class="gold">07</span></div>
+</section>
+
+<!-- ============================================================ 9 · HOW A PARTNERSHIP WORKS ============================================================ -->
+<section class="page dark">
+  <div class="pad" style="height:100%;display:flex;flex-direction:column">
+    <div class="kick" style="color:var(--ivory)">The Partnership, In Practice</div>
+    <h1 class="display" style="font-size:33px;color:#fff;margin-top:15px;line-height:1.04">How working together<br>actually feels.</h1>
+    <p style="margin-top:13px;max-width:5.6in;font-size:11px;color:rgba(246,243,236,.8);font-weight:300;line-height:1.8">No mystery, no surprises. This is the operating standard behind every reservation you send us — the reason travel teams stop worrying once they hand us the trip.</p>
+
+    <div class="ops" style="margin-top:26px;gap:36px 30px">
+      <div class="op"><div class="no">01</div><div class="tx"><h3>Reservations, made simple</h3><p>Book by phone or email with the details you have; we confirm every trip in writing so nothing lives only in a memory.</p></div></div>
+      <div class="op"><div class="no">02</div><div class="tx"><h3>Flights tracked in real time</h3><p>We monitor arrivals and adjust for delays automatically. Your traveler's chauffeur is there when the plane actually lands — not when it was scheduled to.</p></div></div>
+      <div class="op"><div class="no">03</div><div class="tx"><h3>Meet &amp; greet, done right</h3><p>Name-board welcome at baggage claim or the terminal, luggage handled, and a calm walk to the car. First impressions are the whole point.</p></div></div>
+      <div class="op"><div class="no">04</div><div class="tx"><h3>Early departures, planned ahead</h3><p>We build in time for traffic, weather and security lines, so a 6 a.m. flight starts with a calm ride — not a race to the gate.</p></div></div>
+      <div class="op"><div class="no">05</div><div class="tx"><h3>Response you can set a watch to</h3><p>Quotes and confirmations come back quickly, and dispatch is reachable around the clock for the changes real travel always brings.</p></div></div>
+      <div class="op"><div class="no">06</div><div class="tx"><h3>Support when it matters most</h3><p>Flat tire, weather, a last-minute schedule change — there is always a live person and a backup plan. That is what 24/7 really means.</p></div></div>
+      <div class="op"><div class="no">07</div><div class="tx"><h3>Billing that fits your workflow</h3><p>Per-trip billing or a standing corporate account, itemized and clean — so reconciling with your books is never the hard part.</p></div></div>
+      <div class="op"><div class="no">08</div><div class="tx"><h3>Clear, fair cancellation terms</h3><p>Straightforward policies shared up front and in writing, so you always know exactly where you stand.</p></div></div>
+    </div>
+
+    <div style="margin-top:34px;border-top:1px solid var(--lined);padding-top:22px;display:grid;grid-template-columns:1fr 1.6fr;gap:34px;align-items:start">
+      <div><span class="mi blk"><svg><use href="#i-headset"/></svg></span><div class="kick plain" style="color:var(--ivory);font-size:9px;line-height:1.5">When Something<br>Goes Sideways</div></div>
+      <p style="font-size:10.3px;color:rgba(246,243,236,.82);font-weight:300;line-height:1.85">Real travel breaks plans — a flight diverts, a meeting runs long, a traveler adds a stop on the way. What separates a partner from a vendor is the next ten minutes. Dispatch runs around the clock with backup vehicles and drivers on call, so a problem becomes a call we absorb — not one that lands back on your desk. You hear about it from us, with a fix already in motion, long before your traveler notices anything at all.</p>
+    </div>
+
+    <div class="rule d" style="margin-top:30px;margin-bottom:14px"></div>
+    <p style="font-family:'Playfair';font-style:italic;font-weight:400;font-size:13px;color:var(--ivory);line-height:1.5">“Reduce the company's risk” isn't a slogan for us. It's a checklist we run every single day.</p>
+  </div>
+  <div class="foot"><span>Prepared for Subway</span><img class="footlogo" src="../assets/absolute_logo.png" alt="Absolute Transportation"><span style="color:var(--ivory)">08</span></div>
+</section>
+
+<!-- ============================================================ 10 · INSURED & LICENSED (COI SPECIMEN) ============================================================ -->
+<section class="page">
+  <div class="pad" style="height:100%;display:flex;flex-direction:column">
+    <div style="display:flex;justify-content:space-between;align-items:flex-end">
+      <div>
+        <div class="kick">The Question Procurement Asks First</div>
+        <h1 class="display" style="font-size:31px;margin-top:14px;line-height:1.03">Insured. Licensed.<br>Accountable.</h1>
+      </div>
+      <p style="max-width:2.7in;font-size:9.3px;color:var(--muted);line-height:1.6;font-weight:300;text-align:right">“Are they insured?” is where most vendor conversations begin — and end. With us, the paperwork is ready before you ask.</p>
+    </div>
+
+    <p class="lead" style="margin-top:16px;max-width:6in;font-size:10.5px">The answer is a simple yes — with the credentials to prove it. Absolute Transportation is fully licensed by the State of Connecticut, federally authorized as an interstate motor carrier, and fully insured in accordance with Connecticut and federal regulations. A Certificate of Insurance naming Subway is available on request.</p>
+
+    <!-- LICENSING & OPERATING AUTHORITY -->
+    <div style="margin-top:22px;background:var(--ink);color:var(--ivory);display:flex;align-items:stretch;overflow:hidden">
+      <div style="flex:1.25;padding:30px 32px;border-right:1px solid var(--lined)">
+        <div class="kick plain" style="color:var(--ivory);font-size:9px">Licensing &amp; Operating Authority</div>
+        <p style="font-size:11.5px;line-height:1.8;color:rgba(246,243,236,.86);font-weight:300;margin-top:16px">
+          Absolute Transportation is <b style="color:#fff;font-weight:500">fully licensed by the State of Connecticut</b> and <b style="color:#fff;font-weight:500">federally authorized</b> as an interstate motor carrier — and <b style="color:#fff;font-weight:500">fully insured</b> in accordance with Connecticut and federal regulations.
+        </p>
+        <div style="height:1px;background:var(--lined);margin:20px 0"></div>
+        <p style="font-size:9px;color:rgba(246,243,236,.6);line-height:1.65;letter-spacing:.03em">Our operating authority is public and independently verifiable through the FMCSA SAFER system. A Certificate of Insurance naming Subway as certificate holder is available on request — typically the same business day.</p>
+      </div>
+      <div style="flex:1;padding:26px 34px;display:flex;flex-direction:column;justify-content:center;gap:15px">
+        <div>
+          <div style="font-size:8px;letter-spacing:.26em;text-transform:uppercase;color:var(--ivory)">U.S. DOT Number</div>
+          <div style="font-family:'Jost';font-weight:400;font-size:25px;color:#fff;letter-spacing:.18em;margin-top:6px">1567094</div>
+        </div>
+        <div style="height:1px;background:var(--lined)"></div>
+        <div>
+          <div style="font-size:8px;letter-spacing:.26em;text-transform:uppercase;color:var(--ivory)">MC Number</div>
+          <div style="font-family:'Jost';font-weight:400;font-size:25px;color:#fff;letter-spacing:.18em;margin-top:6px">MC-580841</div>
+        </div>
+        <div style="height:1px;background:var(--lined)"></div>
+        <div>
+          <div style="font-size:8px;letter-spacing:.26em;text-transform:uppercase;color:var(--ivory)">Connecticut Livery Permit</div>
+          <div style="font-family:'Jost';font-weight:400;font-size:25px;color:#fff;letter-spacing:.18em;margin-top:6px">3117</div>
+        </div>
+      </div>
+    </div>
+
+    <div style="display:flex;gap:24px;margin-top:18px">
+      <div style="flex:1"><span class="mi blk"><svg><use href="#i-seal"/></svg></span><div class="kick plain gold" style="font-size:8.5px">State &amp; Federally Licensed</div><p style="font-size:9px;color:var(--muted);margin-top:7px;line-height:1.55;font-weight:300">Licensed by Connecticut and federally authorized as an interstate carrier — fully accountable, and verifiable in minutes.</p></div>
+      <div style="flex:1"><span class="mi blk"><svg><use href="#i-personcheck"/></svg></span><div class="kick plain gold" style="font-size:8.5px">Screened, Professional Chauffeurs</div><p style="font-size:9px;color:var(--muted);margin-top:7px;line-height:1.55;font-weight:300">Vetted, uniformed, and trained to represent your brand the moment the door opens.</p></div>
+      <div style="flex:1"><span class="mi blk"><svg><use href="#i-doc"/></svg></span><div class="kick plain gold" style="font-size:8.5px">Certificate On Request</div><p style="font-size:9px;color:var(--muted);margin-top:7px;line-height:1.55;font-weight:300">Ask, and a COI naming Subway as certificate holder is on its way — usually the same business day.</p></div>
+    </div>
+
+    <div style="margin-top:30px;border-top:1px solid var(--line);padding-top:22px">
+      <div class="kick plain" style="color:var(--ink);margin-bottom:16px">What This Means For Subway</div>
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:30px">
+        <div><span class="mi blk"><svg><use href="#i-shield"/></svg></span><div style="font-family:'Playfair';font-weight:700;font-size:12px;color:var(--ink)">Your duty of care, supported</div><p style="font-size:9.3px;color:var(--muted);line-height:1.65;margin-top:7px;font-weight:300">Put your people with a fully licensed, fully insured carrier, and your duty of care for traveling employees rests on solid, documented ground.</p></div>
+        <div><span class="mi blk"><svg><use href="#i-umbrella"/></svg></span><div style="font-family:'Playfair';font-weight:700;font-size:12px;color:var(--ink)">Coverage built for livery</div><p style="font-size:9.3px;color:var(--muted);line-height:1.65;margin-top:7px;font-weight:300">Commercial passenger protection written specifically for professional chauffeured transport — the level of coverage your people deserve.</p></div>
+        <div><span class="mi blk"><svg><use href="#i-doc"/></svg></span><div style="font-family:'Playfair';font-weight:700;font-size:12px;color:var(--ink)">Paperwork at your pace</div><p style="font-size:9.3px;color:var(--muted);line-height:1.65;margin-top:7px;font-weight:300">Name the certificate holder and a COI for your risk or procurement team is typically in your inbox the same business day.</p></div>
+      </div>
+    </div>
+  </div>
+  <div class="foot"><span>Prepared for Subway</span><img class="footlogo" src="../assets/absolute_logo.png" alt="Absolute Transportation"><span class="gold">09</span></div>
+</section>
+
+<!-- ============================================================ 11 · DEDICATED AGENCY LINE ============================================================ -->
+<section class="page dark">
+  <img class="bleed" src="assets/lineup.jpg" alt="">
+  <div class="scrim" style="background:linear-gradient(180deg,rgba(8,8,9,.82),rgba(8,8,9,.6) 40%,rgba(8,8,9,.8))"></div>
+  <div class="scrim" style="background:rgba(8,8,9,.05)"></div>
+  <div class="pad" style="position:relative;height:100%;display:flex;flex-direction:column;justify-content:center;text-align:center;align-items:center">
+    <div class="kick center" style="color:var(--ivory)">Your Direct Line</div>
+    <h1 class="display" style="font-size:32px;color:#fff;margin-top:20px;line-height:1.08;max-width:6in">A single number that always<br>reaches a real person.</h1>
+    <p style="margin-top:16px;max-width:4.6in;font-size:11px;color:rgba(246,243,236,.82);font-weight:300;line-height:1.8">Partners don't wait in a queue. Your reservations, quotes, and last-minute changes come to a priority line — answered promptly, day or night.</p>
+
+    <div style="margin-top:36px;border:1px solid var(--lined);padding:36px 54px;background:rgba(255,255,255,.02)">
+      <span class="mi lg ctr inv"><svg><use href="#i-phone"/></svg></span><div style="font-size:9px;letter-spacing:.34em;text-transform:uppercase;color:var(--ivory)">Corporate Partner Reservations</div>
+      <div style="font-family:'Playfair';font-weight:700;font-size:46px;color:#fff;margin-top:14px;letter-spacing:.01em">(203) 938-0000</div>
+      <div style="width:40px;height:1px;background:var(--gold);margin:18px auto"></div>
+      <div style="font-size:10px;letter-spacing:.22em;text-transform:uppercase;color:rgba(246,243,236,.7)"><svg class="ii"><use href="#i-clock"/></svg>Available 24 Hours · 365 Days</div>
+    </div>
+
+    <div style="display:flex;gap:48px;margin-top:36px">
+      <div style="text-align:center"><span class="mi sm ctr inv"><svg><use href="#i-mail"/></svg></span><div style="font-size:8px;letter-spacing:.24em;text-transform:uppercase;color:var(--ivory);margin-bottom:7px">Reservations Email</div><div style="font-size:11px;color:var(--ivory);font-weight:300">info@absolute-transportation.com</div></div>
+      <div style="width:1px;background:var(--lined)"></div>
+      <div style="text-align:center"><span class="mi sm ctr inv"><svg><use href="#i-briefcase"/></svg></span><div style="font-size:8px;letter-spacing:.24em;text-transform:uppercase;color:var(--ivory);margin-bottom:7px">Partnerships &amp; Accounts</div><div style="font-size:11px;color:var(--ivory);font-weight:300">management@absolute-transportation.com</div></div>
+    </div>
+
+    <p style="margin-top:40px;font-family:'Playfair';font-style:italic;font-weight:400;font-size:13px;color:rgba(246,243,236,.8);max-width:5in">“Trust is built one answered call at a time. Ours are answered day and night.”</p>
+  </div>
+  <div class="foot"><span>Prepared for Subway</span><img class="footlogo" src="../assets/absolute_logo.png" alt="Absolute Transportation"><span style="color:var(--ivory)">10</span></div>
+</section>
+
+<!-- ============================================================ 12 · PARTNER RATE GUIDE ============================================================ -->
+<section class="page">
+  <div class="pad" style="height:100%;display:flex;flex-direction:column">
+    <div class="kick">The Corporate Rate Guide</div>
+    <h1 class="display" style="font-size:32px;margin-top:14px;line-height:1.03">Simple to quote.<br>Simple to book.</h1>
+    <p class="lead" style="margin-top:13px;max-width:5.7in;font-size:11px">We keep pricing straightforward and competitive — and we quote it to you directly. Every corporate rate is tailored to the route, the vehicle, and your volume, so you always receive our most competitive number for the trip in front of you.</p>
+
+    <table class="rate" style="margin-top:26px">
+      <thead><tr><th>Your Most Likely Routes</th><th>Vehicle Class</th><th class="r">Corporate Rate</th></tr></thead>
+      <tbody>
+        <tr><td><span class="from">Shelton HQ</span> <span class="to">→ Tweed New Haven (HVN)</span></td><td style="font-size:9.5px;color:var(--muted)">Sedan / SUV</td><td class="r">Corporate Rates Available</td></tr>
+        <tr><td><span class="from">Shelton HQ</span> <span class="to">→ Bradley International</span></td><td style="font-size:9.5px;color:var(--muted)">Sedan / SUV</td><td class="r">Corporate Rates Available</td></tr>
+        <tr><td><span class="from">Shelton HQ</span> <span class="to">→ Westchester County (HPN)</span></td><td style="font-size:9.5px;color:var(--muted)">Sedan / SUV</td><td class="r">Corporate Rates Available</td></tr>
+        <tr><td><span class="from">Shelton HQ</span> <span class="to">→ LaGuardia</span></td><td style="font-size:9.5px;color:var(--muted)">Sedan / SUV</td><td class="r">Corporate Rates Available</td></tr>
+        <tr><td><span class="from">Shelton HQ</span> <span class="to">→ JFK International</span></td><td style="font-size:9.5px;color:var(--muted)">Sedan / SUV</td><td class="r">Corporate Rates Available</td></tr>
+        <tr><td><span class="from">Shelton HQ</span> <span class="to">→ Midtown Manhattan</span></td><td style="font-size:9.5px;color:var(--muted)">SUV / Sprinter</td><td class="r">Corporate Rates Available</td></tr>
+      </tbody>
+    </table>
+
+    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-top:30px">
+      <div style="border:1px solid var(--line);padding:15px 15px 17px"><span class="mi sm blk" style="margin-bottom:9px"><svg><use href="#i-clock"/></svg></span><div style="font-family:'Playfair';font-weight:700;font-size:13px">Hourly Charter</div><p style="font-size:8.8px;color:var(--muted);margin-top:7px;line-height:1.5;font-weight:300">As-directed service with a minimum, ideal for events &amp; roadshows.</p></div>
+      <div style="border:1px solid var(--line);padding:15px 15px 17px"><span class="mi sm blk" style="margin-bottom:9px"><svg><use href="#i-briefcase"/></svg></span><div style="font-family:'Playfair';font-weight:700;font-size:13px">Executive Service</div><p style="font-size:8.8px;color:var(--muted);margin-top:7px;line-height:1.5;font-weight:300">Priority black-car for corporate &amp; VIP travel.</p></div>
+      <div style="border:1px solid var(--line);padding:15px 15px 17px"><span class="mi sm blk" style="margin-bottom:9px"><svg><use href="#i-people"/></svg></span><div style="font-family:'Playfair';font-weight:700;font-size:13px">Sprinter &amp; Group</div><p style="font-size:8.8px;color:var(--muted);margin-top:7px;line-height:1.5;font-weight:300">Flat group rates for teams and events of up to 14.</p></div>
+      <div style="border:1px solid var(--line);padding:15px 15px 17px"><span class="mi sm blk" style="margin-bottom:9px"><svg><use href="#i-glass"/></svg></span><div style="font-family:'Playfair';font-weight:700;font-size:13px">Limousine &amp; Events</div><p style="font-size:8.8px;color:var(--muted);margin-top:7px;line-height:1.5;font-weight:300">Package pricing for milestones &amp; celebrations.</p></div>
+    </div>
+
+    <div style="margin-top:36px;background:var(--ink);color:var(--ivory);padding:22px 26px;display:flex;align-items:center;justify-content:space-between;gap:26px">
+      <div>
+        <div class="kick plain" style="color:var(--ivory);font-size:8.5px">For Exact Pricing &amp; Our Most Competitive Rates</div>
+        <p style="font-size:11px;color:rgba(246,243,236,.9);font-weight:300;margin-top:9px;line-height:1.6;max-width:4.2in">Please call or email and we'll quote your trip right away. Every rate includes a professional chauffeur, tolls, meet &amp; greet, and flight tracking — gratuity and parking billed at cost.</p>
+      </div>
+      <div style="text-align:right;flex:0 0 auto">
+        <div style="display:flex;align-items:center;justify-content:flex-end;gap:12px"><span class="mi inv"><svg><use href="#i-phone"/></svg></span><div style="font-family:'Playfair';font-weight:700;font-size:20px;color:#fff;letter-spacing:.01em">(203) 938-0000</div></div>
+        <div style="font-size:9.5px;color:var(--ivory);margin-top:4px;letter-spacing:.02em">info@absolute-transportation.com</div>
+      </div>
+    </div>
+
+    <div style="margin-top:30px;border-top:1px solid var(--line);padding-top:22px">
+      <div class="kick plain" style="color:var(--ink);margin-bottom:16px">How Corporate Billing Works</div>
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:30px">
+        <div><div style="font-family:'Playfair';font-weight:700;font-size:12px;color:var(--ink)">Per-trip or on account</div><p style="font-size:9.3px;color:var(--muted);line-height:1.65;margin-top:7px;font-weight:300">Bill each reservation on its own, or run a monthly corporate account with itemized statements for effortless reconciliation.</p></div>
+        <div><div style="font-family:'Playfair';font-weight:700;font-size:12px;color:var(--ink)">The quote is the number</div><p style="font-size:9.3px;color:var(--muted);line-height:1.65;margin-top:7px;font-weight:300">Gratuity and any parking are the only extras, always disclosed up front — no surprise line items after the ride is done.</p></div>
+        <div><div style="font-family:'Playfair';font-weight:700;font-size:12px;color:var(--ink)">Volume in your favor</div><p style="font-size:9.3px;color:var(--muted);line-height:1.65;margin-top:7px;font-weight:300">The more you send our way, the sharper the corporate rate. Tell us your typical volume and we'll build the pricing to it.</p></div>
+      </div>
+    </div>
+  </div>
+  <div class="foot"><span>Prepared for Subway</span><img class="footlogo" src="../assets/absolute_logo.png" alt="Absolute Transportation"><span class="gold">11</span></div>
+</section>
+
+<!-- ============================================================ 12B · TESTIMONIALS ============================================================ -->
+<section class="page dark">
+  <img class="bleed" src="assets/testi.jpg" alt="" style="object-position:center 34%">
+  <div class="scrim" style="background:linear-gradient(180deg,rgba(12,12,13,.74),rgba(12,12,13,.66) 48%,rgba(12,12,13,.82))"></div>
+  <div class="pad" style="position:relative;height:100%;display:flex;flex-direction:column">
+    <div style="display:flex;justify-content:space-between;align-items:center">
+      <div class="kick" style="color:var(--gold2)">In Their Own Words</div>
+      <div style="font-size:9px;letter-spacing:.24em;text-transform:uppercase;color:rgba(246,243,236,.7)">Trusted Since 2007</div>
+    </div>
+    <h1 class="display" style="font-size:32px;color:#fff;margin-top:15px;line-height:1.05">Trust, earned<br>one ride at a time.</h1>
+
+    <div style="margin-top:22px;flex:1;display:grid;grid-template-columns:1fr 1fr;gap:20px;align-items:start;align-content:center">
+      <!-- Gail -->
+      <div style="background:rgba(12,12,13,.70);border:1px solid rgba(255,255,255,.16);padding:20px 22px;display:flex;flex-direction:column">
+        <div style="font-family:'Playfair';font-weight:700;font-size:38px;line-height:.6;color:rgba(246,243,236,.45)">&ldquo;</div>
+        <p style="font-size:10.7px;color:rgba(246,243,236,.9);line-height:1.65;font-weight:300;margin-top:10px">The trolley was super fun and looked great. Our wedding party and their plus-ones took a ride around town for photos — and everyone absolutely loved it.</p>
+        <div style="margin-top:16px">
+          <div style="display:flex;color:rgba(246,243,236,.85);height:10px;align-items:center" aria-label="5 out of 5 stars"><svg style="width:9px;height:9px;fill:currentColor;stroke:none;margin-right:2.5px"><use href="#i-star"/></svg><svg style="width:9px;height:9px;fill:currentColor;stroke:none;margin-right:2.5px"><use href="#i-star"/></svg><svg style="width:9px;height:9px;fill:currentColor;stroke:none;margin-right:2.5px"><use href="#i-star"/></svg><svg style="width:9px;height:9px;fill:currentColor;stroke:none;margin-right:2.5px"><use href="#i-star"/></svg><svg style="width:9px;height:9px;fill:currentColor;stroke:none;margin-right:2.5px"><use href="#i-star"/></svg></div>
+          <div style="font-family:'Playfair';font-weight:700;font-size:14px;color:#fff;margin-top:6px">Gail</div>
+          <div style="font-size:8px;letter-spacing:.2em;text-transform:uppercase;color:rgba(246,243,236,.55);margin-top:3px">Wedding Celebration</div>
+        </div>
+      </div>
+      <!-- Lindsay -->
+      <div style="background:rgba(12,12,13,.70);border:1px solid rgba(255,255,255,.16);padding:20px 22px;display:flex;flex-direction:column">
+        <div style="font-family:'Playfair';font-weight:700;font-size:38px;line-height:.6;color:rgba(246,243,236,.45)">&ldquo;</div>
+        <p style="font-size:10.7px;color:rgba(246,243,236,.9);line-height:1.65;font-weight:300;margin-top:10px">A great experience all around. The team was prompt, attentive, and flexible when I needed a second limousine just a few weeks before the wedding. Wonderful service.</p>
+        <div style="margin-top:16px">
+          <div style="display:flex;color:rgba(246,243,236,.85);height:10px;align-items:center" aria-label="5 out of 5 stars"><svg style="width:9px;height:9px;fill:currentColor;stroke:none;margin-right:2.5px"><use href="#i-star"/></svg><svg style="width:9px;height:9px;fill:currentColor;stroke:none;margin-right:2.5px"><use href="#i-star"/></svg><svg style="width:9px;height:9px;fill:currentColor;stroke:none;margin-right:2.5px"><use href="#i-star"/></svg><svg style="width:9px;height:9px;fill:currentColor;stroke:none;margin-right:2.5px"><use href="#i-star"/></svg><svg style="width:9px;height:9px;fill:currentColor;stroke:none;margin-right:2.5px"><use href="#i-star"/></svg></div>
+          <div style="font-family:'Playfair';font-weight:700;font-size:14px;color:#fff;margin-top:6px">Lindsay</div>
+          <div style="font-size:8px;letter-spacing:.2em;text-transform:uppercase;color:rgba(246,243,236,.55);margin-top:3px">Wedding Client</div>
+        </div>
+      </div>
+      <!-- Mark -->
+      <div style="background:rgba(12,12,13,.70);border:1px solid rgba(255,255,255,.16);padding:20px 22px;display:flex;flex-direction:column">
+        <div style="font-family:'Playfair';font-weight:700;font-size:38px;line-height:.6;color:rgba(246,243,236,.45)">&ldquo;</div>
+        <p style="font-size:10.7px;color:rgba(246,243,236,.9);line-height:1.65;font-weight:300;margin-top:10px">The limos were on time, and the drives from Hamden, CT to NYC and back were smooth and easy. The drivers are very courteous, and the cars clean and comfortable. A stress-free experience.</p>
+        <div style="margin-top:16px">
+          <div style="display:flex;color:rgba(246,243,236,.85);height:10px;align-items:center" aria-label="5 out of 5 stars"><svg style="width:9px;height:9px;fill:currentColor;stroke:none;margin-right:2.5px"><use href="#i-star"/></svg><svg style="width:9px;height:9px;fill:currentColor;stroke:none;margin-right:2.5px"><use href="#i-star"/></svg><svg style="width:9px;height:9px;fill:currentColor;stroke:none;margin-right:2.5px"><use href="#i-star"/></svg><svg style="width:9px;height:9px;fill:currentColor;stroke:none;margin-right:2.5px"><use href="#i-star"/></svg><svg style="width:9px;height:9px;fill:currentColor;stroke:none;margin-right:2.5px"><use href="#i-star"/></svg></div>
+          <div style="font-family:'Playfair';font-weight:700;font-size:14px;color:#fff;margin-top:6px">Mark</div>
+          <div style="font-size:8px;letter-spacing:.2em;text-transform:uppercase;color:rgba(246,243,236,.55);margin-top:3px">Executive Transfer · Hamden → NYC</div>
+        </div>
+      </div>
+      <!-- Rafael -->
+      <div style="background:rgba(12,12,13,.70);border:1px solid rgba(255,255,255,.16);padding:20px 22px;display:flex;flex-direction:column">
+        <div style="font-family:'Playfair';font-weight:700;font-size:38px;line-height:.6;color:rgba(246,243,236,.45)">&ldquo;</div>
+        <p style="font-size:10.7px;color:rgba(246,243,236,.9);line-height:1.65;font-weight:300;margin-top:10px">We&rsquo;ve been using Absolute Transportation for years, and have always found them prompt, courteous, and professional.</p>
+        <div style="margin-top:16px">
+          <div style="display:flex;color:rgba(246,243,236,.85);height:10px;align-items:center" aria-label="5 out of 5 stars"><svg style="width:9px;height:9px;fill:currentColor;stroke:none;margin-right:2.5px"><use href="#i-star"/></svg><svg style="width:9px;height:9px;fill:currentColor;stroke:none;margin-right:2.5px"><use href="#i-star"/></svg><svg style="width:9px;height:9px;fill:currentColor;stroke:none;margin-right:2.5px"><use href="#i-star"/></svg><svg style="width:9px;height:9px;fill:currentColor;stroke:none;margin-right:2.5px"><use href="#i-star"/></svg><svg style="width:9px;height:9px;fill:currentColor;stroke:none;margin-right:2.5px"><use href="#i-star"/></svg></div>
+          <div style="font-family:'Playfair';font-weight:700;font-size:14px;color:#fff;margin-top:6px">Rafael</div>
+          <div style="font-size:8px;letter-spacing:.2em;text-transform:uppercase;color:rgba(246,243,236,.55);margin-top:3px">Client of Many Years</div>
+        </div>
+      </div>
+    </div>
+
+    <p style="margin-top:14px;text-align:center;font-size:9px;letter-spacing:.18em;text-transform:uppercase;color:rgba(246,243,236,.6)">More verified reviews at <span style="color:var(--gold2)">facebook.com/AbsoluteTransportation</span></p>
+  </div>
+  <div class="foot"><span>Prepared for Subway</span><img class="footlogo" src="../assets/absolute_logo.png" alt="Absolute Transportation"><span style="color:var(--gold2)">12</span></div>
+</section>
+
+<!-- ============================================================ 13 · CLOSE ============================================================ -->
+<section class="page dark">
+  <img class="bleed" src="assets/close_subway.jpg" alt="">
+  <div class="scrim" style="background:linear-gradient(180deg,rgba(8,8,9,.8),rgba(8,8,9,.5) 45%,rgba(8,8,9,.94))"></div>
+  <div class="scrim" style="background:rgba(8,8,9,0)"></div>
+  <div class="pad" style="position:relative;height:100%;display:flex;flex-direction:column">
+    <div style="flex:1;display:flex;flex-direction:column;justify-content:center">
+      <div class="kick" style="color:var(--ivory)">Let's Begin</div>
+      <h1 class="display" style="font-size:40px;color:#fff;margin-top:20px;line-height:1.06;max-width:6.2in">Give your people a reason<br>to remember the ride —<br><span style="font-style:italic;font-weight:400;color:var(--ivory)">and to thank you for it.</span></h1>
+      <p style="margin-top:22px;max-width:4.9in;font-size:12px;color:rgba(246,243,236,.86);font-weight:300;line-height:1.9">Send us one trip. See how it feels to hand a traveler to a partner who treats your name the way you do. When it goes exactly as promised — and it will — we'll be here for the next one, and the thousand after that.</p>
+      <p style="margin-top:16px;font-size:9.5px;color:rgba(246,243,236,.62);font-weight:300">Read verified guest reviews at <span style="color:var(--ivory)">facebook.com/AbsoluteTransportation</span>. Client references and a welcome packet tailored to Subway are available on request.</p>
+      <figure style="margin:44px auto 0;width:6.3in;padding:30px 44px 28px;text-align:center;border:1px solid rgba(246,243,236,.42);outline:1px solid rgba(246,243,236,.14);outline-offset:6px;background:rgba(8,8,9,.5)">
+        <div style="font-family:'Playfair';font-weight:400;font-size:48px;line-height:.5;height:22px;color:var(--ivory)">“</div>
+        <blockquote style="margin:14px 0 0;font-family:'Playfair';font-style:italic;font-weight:400;font-size:23px;color:#fff;line-height:1.42">People don’t remember what you sold them.<br>They remember how well you served them.</blockquote>
+        <figcaption style="display:flex;align-items:center;justify-content:center;gap:14px;margin-top:20px;font-family:'Jost';font-size:8.5px;letter-spacing:.3em;text-transform:uppercase">
+          <span style="width:30px;height:1px;background:rgba(246,243,236,.5)"></span>
+          <span><span style="font-weight:500;color:var(--ivory)">Manmohan Komal</span><span style="font-weight:300;color:rgba(246,243,236,.75)">&nbsp;&nbsp;·&nbsp;&nbsp;Chief Executive Officer</span></span>
+          <span style="width:30px;height:1px;background:rgba(246,243,236,.5)"></span>
+        </figcaption>
+      </figure>
+    </div>
+
+    <div class="rule d" style="margin-bottom:26px"></div>
+    <div style="display:flex;justify-content:space-between;align-items:flex-end">
+      <div class="contact" style="flex:1">
+        <div class="b"><div class="l"><svg class="ii"><use href="#i-phone"/></svg>Reservations · 24/7</div><div class="v big" style="color:var(--ivory)">(203) 938-0000</div></div>
+        <div class="b"><div class="l"><svg class="ii"><use href="#i-pin"/></svg>Home Base</div><div class="v">341 Washington Avenue<br>North Haven, CT 06473</div></div>
+        <div class="b"><div class="l"><svg class="ii"><use href="#i-mail"/></svg>Email</div><div class="v">info@absolute-transportation.com</div></div>
+        <div class="b"><div class="l"><svg class="ii"><use href="#i-globe"/></svg>Online</div><div class="v" style="color:var(--ivory)">absolute-transportation.com</div></div>
+      </div>
+      <div style="flex:0 0 auto;text-align:right;margin-left:30px">
+        <img src="../assets/absolute_logo.png" style="width:2.9in;object-fit:contain" alt="Absolute Transportation">
+      </div>
+    </div>
+  </div>
+</section>
+
+</body>
+</html>
