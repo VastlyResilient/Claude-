@@ -92,8 +92,39 @@ def mix(key):
 </section>'''
 
 
+LIGHT_CSS = '''
+.D.L{background:#FAF9F6;color:#0C0C0D}
+.D.L .dim{color:rgba(12,12,13,.55)} .D.L .hair{background:rgba(12,12,13,.16)}
+.D.L .body{color:#3a3936}
+'''
+
+
+def mix_light(key):
+    """White mode: same pages on warm white, daylight photography, the client's true brand colour."""
+    c, x = COMPANIES[key], EXTRA[key]
+    h = mix(key)
+    swaps = [
+        ('class="page D"', 'class="page D L"'), (f'--ac:{TINT[key]}', f'--ac:{x["ACCENT"]}'),
+        (f'<img class="bleed" src="../assets/{x["NIGHT"]}" style="height:74%;object-position:center 30%" alt="">', f'<img class="bleed" src="../assets/{x["DAY"]}" style="height:56%;object-position:center 55%" alt="">'),
+        ('linear-gradient(180deg,rgba(5,5,5,.78) 0%,rgba(5,5,5,.1) 15%,rgba(5,5,5,0) 36%,rgba(5,5,5,.65) 50%,#050505 60%)', 'linear-gradient(180deg,rgba(5,5,5,.5) 0%,rgba(5,5,5,0) 12%,rgba(5,5,5,0) 40%,rgba(5,5,5,.7) 50%,#050505 56%)'),
+        ('<div class="m bar" style="top:.5in"><img src="../../assets/absolute_logo.png" alt="Absolute Transportation" style="height:22px"><span class="lab dim">Corporate Programme · 2027</span></div>',
+         '<div class="m bar" style="top:.5in"><img src="../../assets/absolute_logo.png" alt="Absolute Transportation" style="height:22px"><span class="lab" style="color:#FFFFFF;text-shadow:0 1px 6px rgba(0,0,0,.6)">Corporate Programme · 2027</span></div>'),
+        ('src="../assets/occ_city.jpg"', 'src="../assets/occ_airport.jpg"'), ('object-position:center 55%" alt="">\n  <div style="position:absolute;left:0;right:0;top:0;height:4.5in', 'object-position:center 45%" alt="">\n  <div style="position:absolute;left:0;right:0;top:0;height:4.5in'),
+        ('linear-gradient(180deg,rgba(5,5,5,.7) 0%,rgba(5,5,5,0) 28%,rgba(5,5,5,0) 62%,#050505 100%)', 'linear-gradient(180deg,#050505 0%,rgba(5,5,5,.94) 13%,rgba(5,5,5,0) 30%,rgba(5,5,5,0) 68%,#050505 100%)'),
+        (f'src="../assets/chauffeur_{key}.jpg"', 'src="../assets/testi.jpg"'), ('object-position:42% center', 'object-position:78% center'),
+        ('src="../assets/lineup.jpg" style="width:100%;height:100%;object-fit:cover;object-position:center 64%"', 'src="../assets/occ_group.jpg" style="width:100%;height:100%;object-fit:cover;object-position:center 60%"'),
+        (c['LOGO_WHITE'], c['LOGO_COLOR']),
+        ('rgba(5,5,5,', 'rgba(250,249,246,'), ('#050505', '#FAF9F6'), ('rgba(255,255,255,', 'rgba(12,12,13,'), ('color:#fff', 'color:#0C0C0D'),
+    ]
+    for o, n in swaps:
+        assert o in h, o[:70]; h = h.replace(o, n)
+    return h
+
+
 if __name__ == '__main__':
     for key in (sys.argv[1:] or COMPANIES):
         html = f'<!doctype html><html lang="en"><head><meta charset="utf-8"><title>{COMPANIES[key]["CO"]} — B + C mix</title><style>{CSS}{MIX_CSS}</style></head><body>' + mix(key) + '</body></html>'
         open(os.path.join(HERE, 'concepts', f'{key}-mix.html'), 'w', encoding='utf-8').write(html)
+        html = f'<!doctype html><html lang="en"><head><meta charset="utf-8"><title>{COMPANIES[key]["CO"]} — B + C mix, white</title><style>{CSS}{MIX_CSS}{LIGHT_CSS}</style></head><body>' + mix_light(key) + '</body></html>'
+        open(os.path.join(HERE, 'concepts', f'{key}-mix-white.html'), 'w', encoding='utf-8').write(html)
         print('wrote', key)
