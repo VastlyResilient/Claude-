@@ -2,7 +2,7 @@
 """'Quiet' edition: a restrained, classic, old-money treatment of the corporate deck,
 built to research/art-direction-brief.md (drawn from research/magazines-100.md).
 
-Nine sample pages per company: cover, contents, letter, plate, needs, routes table,
+Ten sample pages per company: cover, contents, letter, plate, needs, routes table,
 breather plate, six assurances, how we would begin. Writes concepts/<key>-quiet.html.
 Folios follow the planned 16-page order, so the contents page is accurate.
 """
@@ -64,16 +64,20 @@ def build(key):
     head = lambda n, t, s='': f'<div class="m" style="top:1.42in"><div class="lb"><span class="ac">Chapter {n}</span></div><h2 class="h1" style="margin-top:12px">{t}</h2>' + (f'<p class="stand">{s}</p>' if s else '') + '</div>'
     fo = lambda n: f'<div class="folio">{n}</div>'
     cols = [c['COL1'], ('Corporate Travel &amp; Executive Assistants', ['One number and one email for every booking', 'Flight tracking with automatic adjustments', 'Written confirmation of every trip', 'A single, itemized corporate account']), c['COL3'], c['COL4']]
-    contents = [('A Letter', 5), (f'In the Service of {cs}', 6), (f'From Your {city} Campus', 7), ('The Fleet', 9), ('The Chauffeurs', 11), ('Six Assurances', 12), ('How We Would Begin', 13)]
-    toc = ''.join(f'<div style="display:flex;align-items:baseline;gap:12px;padding:15px 0;border-bottom:.67px solid var(--hair)"><span class="rn" style="width:.42in">{ROM[i]}</span><span class="dis" style="font-size:22px;line-height:26px;font-weight:500">{t}</span><span style="flex:1"></span><span style="font-size:12px;font-variant-numeric:oldstyle-nums">{p}</span></div>' for i, (t, p) in enumerate(contents))
+    contents = [('A Letter', 5), (f'In the Service of {cs}', 6), (f'From Your {city} Campus', 7), ('In Our Care', 8), ('The Fleet', 9), ('The Chauffeurs', 11), ('Six Promises', 12), ('How We Would Begin', 13)]
+    toc = ''.join(f'<div style="display:flex;align-items:baseline;gap:12px;padding:13px 0;border-bottom:.67px solid var(--hair)"><span class="rn" style="width:.42in">{ROM[i]}</span><span class="dis" style="font-size:22px;line-height:26px;font-weight:500">{t}</span><span style="flex:1"></span><span style="font-size:12px;font-variant-numeric:oldstyle-nums">{p}</span></div>' for i, (t, p) in enumerate(contents))
     needs = ''.join(f'<div class="row"><span class="rn">{ROM[i]}</span><span class="li" style="padding-right:.2in">{t}</span><div class="d">{"".join(f"<div>{x}</div>" for x in its)}</div></div>' for i, (t, its) in enumerate(cols))
     rrows = ''
     for _, t, v in c['ROUTES']:
         name = t.split(' (')[0]; rrows += f'<tr><td>{name}</td><td class="q">{CODES.get(name, "")}</td><td class="q r">{v}</td></tr>'
-    why = [('A person answers', 'One number, answered day and night, every day of the year.'), ('The owners are accountable', 'Family-owned since 2007. The people who own the company dispatch the cars and follow up after the ride.'),
-           ('Flights are followed', 'Every arrival is tracked in real time, so the chauffeur is waiting when the aircraft actually lands.'), ('Chauffeurs are made, not found', 'Background-checked, commercially licensed, trained in hospitality, and discreet.'),
-           ('Licensed and insured', f'U.S. DOT 1567094. MC-580841. Connecticut Livery Permit 3117. A certificate naming {co} on request.'), ('One clean account', 'Every trip confirmed in writing, and one itemized statement each month.')]
+    why = [('A person answers', 'Day or night, every day of the year, you reach someone who knows your account and can act on it.'), ('The owners are accountable', 'This is our family\'s name. The people who own the company dispatch the cars and call you afterwards.'),
+           ('Flights are followed', 'Every arrival is tracked in real time, so your traveler is met, and never left to wonder.'), ('Chauffeurs are made, not found', 'Background-checked, commercially licensed, trained in hospitality, and discreet about everything they hear.'),
+           ('Licensed and insured', f'U.S. DOT 1567094. MC-580841. Connecticut Livery Permit 3117. A certificate naming {co} on request, so your duty of care rests on documented ground.'), ('One clean account', 'Every trip confirmed in writing, and one itemized statement each month.')]
     wl = ''.join(f'<div class="row"><span class="rn">{ROM[i]}</span><span class="li" style="padding-right:.2in">{a}</span><div class="d">{b}</div></div>' for i, (a, b) in enumerate(why))
+    care = [('Before they land', 'Their flight is already being followed. If it is early, so are we. If it is late, nobody has to call.'), ('At arrivals', 'A chauffeur who knows their name, takes the bag, and asks nothing of them.'),
+            ('In the car', 'Quiet, cool and immaculate. Conversation only if they want it, and discretion about everything that is said.'), ('When plans change', 'One call to a person who can decide. A new route, a later pickup, a second vehicle: handled first, then reported to you.'),
+            ('At the door', 'Delivered to the entrance, not the kerb across the street, with their bags in hand.'), ('Afterwards', 'If anything was less than it should have been, you hear it from us before you hear it from them.')]
+    cl = ''.join(f'<div class="row"><span class="rn">{ROM[i]}</span><span class="li" style="padding-right:.2in">{a}</span><div class="d">{b}</div></div>' for i, (a, b) in enumerate(care))
     steps = [('One call', 'We open your account and learn how your people travel.'), ('One contact', 'A single number and address for every booking.'), ('First journeys', 'Each confirmed in writing, each flight followed.'), ('One statement', 'Itemized, monthly, simple to reconcile.')]
     sl = ''.join(f'<div><div class="rn" style="font-size:26px;line-height:28px">{ROM[i]}</div><div class="li" style="margin-top:8px">{a}</div><div style="font-size:12px;line-height:18px;margin-top:5px">{b}</div></div>' for i, (a, b) in enumerate(steps))
     bill = [('Per trip or on account', 'Bill each reservation on its own, or keep a monthly corporate account.'), ('The quote is the number', 'Chauffeur, tolls, greeting and flight tracking are included. Gratuity and parking are the only extras.'), ('Volume in your favour', 'The more you send our way, the sharper the corporate rate.')]
@@ -84,7 +88,7 @@ def build(key):
   <div class="a" style="left:1.5in;right:1.5in;top:1.35in;height:6.2in"><img class="plate" src="../assets/om_cover.jpg" style="object-position:center 72%" alt=""></div>
   <div class="a" style="left:1in;right:1in;top:7.9in;text-align:center">
     <div class="lb mu">A private proposal &nbsp;·&nbsp; Prepared for</div><img src="{logo}" alt="{co}" style="height:{lh};margin-top:14px">
-    <h1 class="dis" style="font-size:54px;line-height:58px;letter-spacing:-.01em;margin-top:16px">On arriving <i>well</i></h1></div>
+    <h1 class="dis" style="font-size:54px;line-height:58px;letter-spacing:-.01em;margin-top:16px">Your people, <i>in our care</i></h1></div>
   <div class="a lb mu" style="left:1in;right:1in;top:10.25in;display:flex;justify-content:space-between"><span>Family-owned since 2007</span><span>North Haven, Connecticut</span><span>Volume I · MMXXVII</span></div>
 </section>
 <section class="page">{run('Contents')}
@@ -98,11 +102,11 @@ def build(key):
 </section>
 <section class="page">{run('I · A Letter')}{head('I', f'A letter to {cs}')}
   <div class="m" style="top:3.3in;display:grid;grid-template-columns:4.2in 1.8in;gap:.5in">
-    <div><p class="tx" style="font-size:14px;line-height:22px"><span class="dis ac" style="float:left;font-size:68px;line-height:54px;padding:6px 9px 0 0">Y</span>our people are asked to be in a great many places, and to arrive in each of them ready. Our family has spent the better part of two decades seeing that travel days of that kind begin and end calmly.</p>
-      <p class="tx" style="font-size:14px;line-height:22px">We keep one fleet, always in black and always immaculate. We answer the telephone ourselves, at any hour. We follow each flight, so that a chauffeur is waiting when the aircraft actually lands, and not when it was scheduled to.</p>
-      <p class="tx" style="font-size:14px;line-height:22px">None of this is remarkable on its own. What we hope you will notice is that it happens every time: the early arrival, the door held open, the quiet drive, the call returned at once. We treat every traveler you send us as though your own name were in the back seat, because in every way that matters it is.</p>
-      <p class="tx" style="font-size:14px;line-height:22px">We would be honoured to serve {co}, and to begin, if you will allow it, with a single journey.</p>
-      <div style="height:46px"></div><p class="it" style="font-size:26px;line-height:30px">Manmohan Komal</p><div class="lb mu" style="margin-top:6px">Chief Executive Officer</div></div>
+    <div><p class="tx" style="font-size:14px;line-height:22px"><span class="dis ac" style="float:left;font-size:68px;line-height:54px;padding:6px 9px 0 0">S</span>omewhere tonight, one of your people is landing after a long day, a long way from home. They are tired. They are thinking about tomorrow's meeting, or about the family they have not seen since Monday. What happens in the next ten minutes will never appear in a report. They will remember it all the same.</p>
+      <p class="tx" style="font-size:14px;line-height:22px">We built this company for those ten minutes. For the chauffeur already standing at arrivals, who knows their name. For the bag lifted before they reach for it. For the quiet car, and the feeling that someone thought about them before they arrived.</p>
+      <p class="tx" style="font-size:14px;line-height:22px">You carry a responsibility most people never see: the safety and the dignity of everyone who travels in your name. We would like to carry it with you. We answer the telephone ourselves, at any hour. We follow every flight. And we treat each traveler as though your own name were in the back seat, because in every way that matters, it is.</p>
+      <p class="tx" style="font-size:14px;line-height:22px">We would be honoured to look after the people of {co}, and to begin, if you will allow it, with a single journey.</p>
+      <div style="height:30px"></div><p class="it" style="font-size:26px;line-height:30px">Manmohan Komal</p><div class="lb mu" style="margin-top:6px">Chief Executive Officer</div></div>
     <div><div style="height:2.25in"><img class="plate" src="../assets/om_handle.jpg" alt=""></div><p class="cap"><b>Plate II</b>Detailed before every reservation.</p></div>
   </div>
   {fo(5)}
@@ -113,13 +117,13 @@ def build(key):
 </section>
 <section class="page">{run(f'II · In the Service of {cs}')}
   <div class="a" style="right:1in;top:1.45in"><img src="{logo}" alt="{co}" style="height:{lh}"></div>
-  {head('II', f'In the service of <i>{cs}</i>', f'Four parts of your company travel differently. Here is what we would take care of for each.')}
+  {head('II', f'In the service of <i>{cs}</i>', f'Four groups of people depend on you. Here is how we would look after each of them.')}
   <div class="m" style="top:4.0in;border-top:1px solid var(--ink)">{needs}</div>
-  <div class="m" style="top:9.0in"><p class="tx" style="max-width:4.3in;color:var(--mut);font-style:italic">{cs} is not buying transportation. It is buying how its people and its guests feel at the start and end of a journey.</p></div>
+  <div class="m" style="top:9.0in"><p class="tx" style="max-width:4.3in;color:var(--mut);font-style:italic">{cs} is not buying transportation. It is entrusting us with its people, and with the first and last impression of every journey.</p></div>
   {fo(6)}
 </section>
 <section class="page">{run(f'III · From Your {city} Campus')}
-  {head('III', f'From your {city} campus', 'The journeys your people are most likely to take, and the vehicle we would send.')}
+  {head('III', f'From your {city} campus', 'Wherever your people are going, someone is already expecting them.')}
   <div class="m" style="top:3.85in;display:grid;grid-template-columns:3.55in 1fr;gap:.45in">
     <div><div class="lb mu" style="margin-bottom:10px">Table I &nbsp;·&nbsp; Destinations</div>
       <table><thead><tr><th>Destination</th><th>Code</th><th class="r">Vehicle</th></tr></thead><tbody>{rrows}</tbody></table>
@@ -136,17 +140,23 @@ def build(key):
   <div class="a" style="left:1in;right:1in;top:2.6in;height:4.35in"><img class="plate" src="../assets/om_drive.jpg" alt=""></div>
   <div class="m" style="top:7.0in"><p class="cap"><b>Plate V</b>The drive, a little before eight.</p></div>
 </section>
-<section class="page">{run('VI · Six Assurances')}
-  {head('VI', 'Six assurances, <i>in writing</i>', f'You should not have to take our word for it. This is what {cs} receives from the first journey.')}
+<section class="page">{run('IV · In Our Care')}
+  {head('IV', 'In our care', 'A journey with us, as the person in the back seat will remember it.')}
+  <div class="m" style="top:4.0in;border-top:1px solid var(--ink)">{cl}</div>
+  <div class="m" style="top:8.6in;text-align:center"><p class="it" style="font-size:24px;line-height:32px;text-wrap:balance;padding:0 .4in">“People don't remember what you sold them. They remember how well you served them.”</p><div class="lb mu" style="margin-top:12px">Manmohan Komal</div></div>
+  {fo(8)}
+</section>
+<section class="page">{run('VII · Six Promises')}
+  {head('VII', 'Six promises, <i>in writing</i>', 'Care is easy to claim. These are the parts of it you can hold us to.')}
   <div class="m" style="top:4.0in;border-top:1px solid var(--ink)">{wl}</div>
-  <div class="m" style="top:8.75in"><div class="lb ac">An easy first step</div><p class="tx" style="margin-top:8px;max-width:4.3in">Send us one journey. See how it feels to hand a traveler to a partner who treats your name the way you do.</p></div>
+  <div class="m" style="top:8.75in"><div class="lb ac">An easy first step</div><p class="tx" style="margin-top:8px;max-width:4.3in">Send us one journey. Choose the traveler who matters most, or the trip most likely to go wrong. Then ask them how it felt.</p></div>
   {fo(12)}
 </section>
-<section class="page">{run('VII · How We Would Begin')}
-  {head('VII', 'How we would begin', 'Four steps, and none of them asks much of you.')}
+<section class="page">{run('VIII · How We Would Begin')}
+  {head('VIII', 'How we would begin', 'Four steps. We do the work in each of them.')}
   <div class="m" style="top:3.85in;border-top:1px solid var(--ink);padding-top:18px;display:grid;grid-template-columns:repeat(4,1fr);gap:.3in">{sl}</div>
   <div class="m" style="top:5.75in"><div class="hl"></div><div style="display:grid;grid-template-columns:repeat(3,1fr);gap:.35in;margin-top:18px">{bl}</div></div>
-  <div class="m" style="top:7.55in;border:1px solid var(--ink);padding:.3in;text-align:center"><div class="lb mu">Reservations, at any hour</div>
+  <div class="m" style="top:7.55in;border:1px solid var(--ink);padding:.3in;text-align:center"><div class="lb mu">A person will answer, at any hour</div>
     <div class="ac" style="font-family:'Cor';font-weight:500;font-size:46px;line-height:50px;letter-spacing:.01em;font-variant-numeric:lining-nums;margin-top:8px">(203) 938-0000</div>
     <div style="font-size:13px;margin-top:6px">info@absolute-transportation.com</div></div>
   <div class="m cap" style="top:9.75in;text-align:center;margin:0">Set in Cormorant Garamond and Libre Caslon. Prepared in North Haven, Connecticut, for {co}.</div>
